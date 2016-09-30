@@ -69,9 +69,9 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             y_thrust = (self.thrust * math.cos(math.radians(float(self.angle))))
             #takes the thrust on the player and the players angle and works out the y component of that thrust
 
-            self.drag_x = functions.drag(1,self.velocities[0],1,1)
+            self.drag_x = functions.drag(planet.airDensity,self.velocities[0],1,1)
 			#calculates drag for x axis
-            self.drag_y = functions.drag(1,self.velocities[1],1,1)
+            self.drag_y = functions.drag(planet.airDensity,self.velocities[1],1,1)
 			#calculates drag for y axis
             lander_mass = 1000
 			#m for mass, defined arbitrarily as 1000 for now
@@ -126,7 +126,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #ensuring that the planet surface lines up with the bottom of the screen (which is resolution dependant unless we had huge images)
             self.thrust = 0.5
             #the thrust that the player can exert (don't ask me why I put this in this section...)
-			#self.airDensity = 0
+            self.airDensity = 0
 			#Defines the density of the planets atmosphere
 
     sprite_list = pygame.sprite.Group()
@@ -267,10 +267,11 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #display the fuel level on the screen (in a place appropraite for the resolution)
             screen.blit(planet_tag, functions.resource("planet_tag", resolution))
             #display the planet name on the screen (in a place appropraite for the resolution)
-            screen.blit(drag_txt_x, functions.resource("drag_txt_x", resolution))
+            #screen.blit(drag_txt_x, functions.resource("drag_txt_x", resolution))
 			#display the horizontal drag text on the screen
-            screen.blit(drag_txt_y, functions.resource("drag_txt_y", resolution))
+            #screen.blit(drag_txt_y, functions.resource("drag_txt_y", resolution))
 			#display the horizontal drag text on the screen
+            """Drag text has been commented out for the moon level"""
 
             if pygame.sprite.collide_mask(player, planet) != None:
                 #check to see if the player has collide with the planet
