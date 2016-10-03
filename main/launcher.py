@@ -9,7 +9,7 @@ import sys
 #we use sys for reading/editing a hidden settings file for saving preferences
 import pygame
 #pygame gives us easy graphics toys
-import level1, level2, level3, level4
+import level1, level2, level3
 #I've split the levels off into different scripts for ease of adding/changing them
 
 pygame.mixer.pre_init(44100, -16, 2, 2048)

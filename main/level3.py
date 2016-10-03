@@ -64,9 +64,9 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                 #stops the player from being able to thrust up if there's no fuel
             self.angle += self.angular_thrust
             #takes the players current angle and alters it by the angular thrust
-            x_thrust = (self.thrust * math.sin(math.radians(float(self.angle))))
+            self.x_thrust = (self.thrust * math.sin(math.radians(float(self.angle))))
             #takes the thrust on the player and the players angle and works out the x component of that thrust
-            y_thrust = (self.thrust * math.cos(math.radians(float(self.angle))))
+            self.y_thrust = (self.thrust * math.cos(math.radians(float(self.angle))))
             #takes the thrust on the player and the players angle and works out the y component of that thrust
 
             self.drag_x = functions.drag(planet.airDensity,self.velocities[0],1,1)
@@ -80,7 +80,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             drag_decel_y = (self.drag_y)/lander_mass
 			#vertical deceleration due to drag
 
-            self.velocities = (self.velocities[0]+x_thrust-drag_decel_x, self.velocities[1]+accel_g-y_thrust-drag_decel_y)
+            self.velocities = (self.velocities[0]+self.x_thrust-drag_decel_x+planet.wind_v, self.velocities[1]+accel_g-self.y_thrust-drag_decel_y)
             #changes the players velocity by adding gravity, thrust and drag deceleration
 
             self.rect.center = (self.c_position[0]+int(round(self.velocities[0])), self.c_position[1]+int(round(self.velocities[1])))
@@ -110,24 +110,27 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
         def __init__(self):
             super(Planet, self).__init__()
 
-            self.name = "Earth"
+            self.name = "Mars"
             #the name to be displayed in the top left info section
-            self.image = pygame.image.load(resource_location+"earth_surface.png").convert_alpha()
+            self.image = pygame.image.load(resource_location+"mars_surface.png").convert_alpha()
             #the image used for the planet surface
-            self.bg_image = resource_location+"earth.png"
+            self.bg_image = resource_location+"mars.png"
             #the image used as a background for the planet (including planet surface)
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
             self.mask = pygame.mask.from_surface(self.image)
             #works out the border of the surface for collision detection
-            self.accel_g = 0.6
+            self.accel_g = 0.23
             #the acceleration due to gravity from the planet
             self.rect.bottomleft = (0, resolution[1])
             #ensuring that the planet surface lines up with the bottom of the screen (which is resolution dependant unless we had huge images)
-            self.thrust = 1
+            self.thrust = 0.5
             #the thrust that the player can exert (don't ask me why I put this in this section...)
-            self.airDensity = 10 #for now
+            self.airDensity = 1 #for now
 			#Defines the density of the planets atmosphere
+            self.wind_noise = pygame.mixer.Sound("../resources/wind_noise.ogg")
+            #loads the wind noise
+            self.wind_v = 0
 
     sprite_list = pygame.sprite.Group()
     #creates a list of sprites
@@ -154,6 +157,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
     #check to see if we've landed safely
     next_level = False
     #check to see if we're advancing to the next level this frame
+    wind = False
+    #defaults to no wind
 
     if not muted:
         #check to see if we're muted (i know this looks weird, but it makes sense in other contexts)
@@ -166,6 +171,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 
     while in_level:
         #enables us to drop out of the level if we choose to
+        level_counter = 0
         while playing:
             #if the game is running
             for event in pygame.event.get():
@@ -194,6 +200,11 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                         #check to see if the esc key was pressed
                         in_level = False
                         #if it was then drop back to the main menu
+                    elif event.key == pygame.K_EQUALS:
+                        safe_landing_check = True
+                        next_level = True
+                        playing = False
+                        #a debug tool to skip levels
                 elif event.type == pygame.KEYUP:
                     #check to see if a key has been released
                     if event.key == pygame.K_UP:
@@ -238,6 +249,13 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                 y_vel_txt = font_small.render("Vertical velocity: "+str(round(player.velocities[1], 1)), True, GREEN)
                 #if its not then create the text that shows horizontal velocity in green
 
+            level_counter += 1
+            #a counter for timed events
+            if level_counter > 70:
+                #after 70 ticks
+                wind = functions.wind_start(planet, screen, level_counter, resolution)
+                #start wind noise and warnings
+
             if player.fuel > 75:
                 #check to see if the fuel is more than 75 percent full
                 fuel_txt = font_small.render("Fuel: "+str(player.fuel)+"%", True, GREEN)
@@ -276,6 +294,10 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                 #check to see if the player has collide with the planet
                 player.burn_sound.stop()
                 #if it has then stop the engine burning sound
+                if wind == True:
+                    #checks to see if wind is playing
+                    wind = functions.wind_stop(planet)
+                    #stops wind from playing
                 player, safe_landing_check, playing = functions.surface_collision(screen, resolution, player, difficulty)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
 

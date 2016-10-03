@@ -194,6 +194,11 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                         #check to see if the esc key was pressed
                         in_level = False
                         #if it was then drop back to the main menu
+                    elif event.key == pygame.K_EQUALS:
+                        safe_landing_check = True
+                        next_level = True
+                        playing = False
+                        #a debug tool to skip levels
                 elif event.type == pygame.KEYUP:
                     #check to see if a key has been released
                     if event.key == pygame.K_UP:

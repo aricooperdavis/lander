@@ -64,9 +64,9 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                 #stops the player from being able to thrust up if there's no fuel
             self.angle += self.angular_thrust
             #takes the players current angle and alters it by the angular thrust
-            x_thrust = (self.thrust * math.sin(math.radians(float(self.angle))))
+            self.x_thrust = (self.thrust * math.sin(math.radians(float(self.angle))))
             #takes the thrust on the player and the players angle and works out the x component of that thrust
-            y_thrust = (self.thrust * math.cos(math.radians(float(self.angle))))
+            self.y_thrust = (self.thrust * math.cos(math.radians(float(self.angle))))
             #takes the thrust on the player and the players angle and works out the y component of that thrust
 
             self.drag_x = functions.drag(planet.airDensity,self.velocities[0],1,1)
@@ -80,7 +80,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             drag_decel_y = (self.drag_y)/lander_mass
 			#vertical deceleration due to drag
 
-            self.velocities = (self.velocities[0]+x_thrust-drag_decel_x, self.velocities[1]+accel_g-y_thrust-drag_decel_y)
+            self.velocities = (self.velocities[0]+self.x_thrust-drag_decel_x, self.velocities[1]+accel_g-self.y_thrust-drag_decel_y)
             #changes the players velocity by adding gravity, thrust and drag deceleration
 
             self.rect.center = (self.c_position[0]+int(round(self.velocities[0])), self.c_position[1]+int(round(self.velocities[1])))
@@ -194,6 +194,11 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                         #check to see if the esc key was pressed
                         in_level = False
                         #if it was then drop back to the main menu
+                    elif event.key == pygame.K_EQUALS:
+                        safe_landing_check = True
+                        next_level = True
+                        playing = False
+                        #a debug tool to skip levels
                 elif event.type == pygame.KEYUP:
                     #check to see if a key has been released
                     if event.key == pygame.K_UP:

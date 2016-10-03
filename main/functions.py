@@ -2,6 +2,8 @@ import pygame
 #we need pygame for fonts
 import math
 #we need pythons math library for absolute value functions for safe landing calculations
+import random
+#just used for winds
 
 BLACK  = (  0,   0,   0)
 WHITE  = (255, 255, 255)
@@ -110,6 +112,7 @@ def resource(thing, res):
     "frame_rate_txt" : [15, 105],
     "drag_txt_x" : [15, 135],
 	"drag_txt_y" : [15,165],
+    "wind_warning" : [15, 195],
     }
 
     low_res = {
@@ -139,6 +142,7 @@ def resource(thing, res):
     "frame_rate_txt" : [10, 90],
 	"drag_txt_x" : [10, 110],
 	"drag_txt_y" : [10,130],
+    "wind_warning" : [10, 150],
     }
 
     if res == [1280, 720]:
@@ -160,3 +164,27 @@ def drag(density, velocity, dragCoeff, Area):
 	else:
 		F=0
 	return F
+
+def wind_start(planet, screen, level_counter, resolution):
+    if level_counter < 72:
+        #start the wind noise twice (because sometimes it fails to work for no reason)
+        planet.wind_noise.play()
+        #play the noise
+    font_small = pygame.font.SysFont('Courier New', resource("small_font", resolution), True, False)
+    #define the font used for the warning text
+    wind_warning = font_small.render("WARNNIG: HIGH WINDS DETECTED!", True, RED)
+    #render the warning text
+    planet.wind_v = random.random()*0.2
+    #generate random wind
+    if (round(level_counter, -1)/10.0) % 2 == 0:
+        #every 10 ticks
+        screen.blit(wind_warning, resource("wind_warning", resolution))
+        #flash the warning text
+    return True
+    #return variable so we know that the wind is on
+
+def wind_stop(planet):
+    planet.wind_noise.stop()
+    #turn off wind noise
+    return False
+    #return variable saying wind noise is off (so we don't try and turn it off twice)
