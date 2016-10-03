@@ -51,7 +51,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #loads a burn sound to be played whilst thrusting
             self.explosion_sound = pygame.mixer.Sound("../resources/explosion.ogg")
             #loads an explosion sound to be played on crashing
-            self.landed_sound = pygame.mixer.Sound(".../resources/landed.ogg")
+            self.landed_sound = pygame.mixer.Sound("../resources/landed.ogg")
             #Loads a voice-over sound to be played when landed successfully
 
         def update(self, accel_g):
@@ -79,7 +79,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 			#horizontal deceleration due to drag
             drag_decel_y = (self.drag_y)/lander_mass
 			#vertical deceleration due to drag
-			
+
             self.velocities = (self.velocities[0]+x_thrust-drag_decel_x, self.velocities[1]+accel_g-y_thrust-drag_decel_y)
             #changes the players velocity by adding gravity, thrust and drag deceleration
 
@@ -220,7 +220,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 			#creates the text that says what horizontal drag is
             drag_txt_y = font_small.render("Vertical Drag: "+str(round(player.drag_y)), True, WHITE)
 			#creates the text that says what Vertical drag is
-			
+
             planet_tag = font_small.render("Planet: "+str(planet.name), True, WHITE)
             #create the text that names the planet
             if math.fabs(player.velocities[0]) > difficulty:

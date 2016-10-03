@@ -51,7 +51,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #loads a burn sound to be played whilst thrusting
             self.explosion_sound = pygame.mixer.Sound("../resources/explosion.ogg")
             #loads an explosion sound to be played on crashing
-            self.landed_sound = pygame.mixer.Sound(".../resources/landed.ogg")
+            self.landed_sound = pygame.mixer.Sound("../resources/landed.ogg")
             #Loads a voice-over sound to be played when landed successfully
 
         def update(self, accel_g):
