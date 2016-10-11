@@ -80,7 +80,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             drag_decel_y = (self.drag_y)/lander_mass
 			#vertical deceleration due to drag
 
-            self.velocities = (self.velocities[0]+self.x_thrust-drag_decel_x+planet.wind_v, self.velocities[1]+accel_g-self.y_thrust-drag_decel_y)
+            self.velocities = (self.velocities[0]+self.x_thrust-drag_decel_x+wind.velocity_k, self.velocities[1]+accel_g-self.y_thrust-drag_decel_y)
             #changes the players velocity by adding gravity, thrust and drag deceleration
 
             self.rect.center = (self.c_position[0]+int(round(self.velocities[0])), self.c_position[1]+int(round(self.velocities[1])))
@@ -128,9 +128,17 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #the thrust that the player can exert (don't ask me why I put this in this section...)
             self.airDensity = 1 #for now
 			#Defines the density of the planets atmosphere
-            self.wind_noise = pygame.mixer.Sound("../resources/wind_noise.ogg")
-            #loads the wind noise
-            self.wind_v = 0
+
+    class Obstacles(pygame.sprite.Sprite):
+        """Object class for wind/other things to crash into"""
+        def __init__(self):
+            super(Obstacles, self).__init__()
+            self.image = pygame.image.load(resource_location+"dust.png").convert_alpha()
+            self.rect = self.image.get_rect()
+            self.rect.midright = [0, 0]
+            #hide wind by default
+            self.velocity_k = 0
+            self.noise = pygame.mixer.Sound("../resources/wind_noise.ogg")
 
     sprite_list = pygame.sprite.Group()
     #creates a list of sprites
@@ -138,6 +146,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
     #make a planet called planet
     player = Craft()
     #make a craft called player
+    wind = Obstacles()
+    #make an obstacle called wind
     sprite_list.add(player)
     #add the player to a list of sprites
 
@@ -157,7 +167,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
     #check to see if we've landed safely
     next_level = False
     #check to see if we're advancing to the next level this frame
-    wind = False
+    wind_on = False
     #defaults to no wind
 
     if not muted:
@@ -168,6 +178,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
         #if we are muted then set the explosion sound to silence
         player.landed_sound = pygame.mixer.Sound("../resources/silence.ogg")
         #if we are muted then set the landed sound to silence
+        wind.noise = pygame.mixer.Sound("../resources/silence.ogg")
+        #if we are muted then set the wind noise to silence
 
     while in_level:
         #enables us to drop out of the level if we choose to
@@ -253,7 +265,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #a counter for timed events
             if level_counter > 70:
                 #after 70 ticks
-                wind = functions.wind_start(planet, screen, level_counter, resolution)
+                wind_on = functions.wind_start(wind, screen, level_counter, resolution)
                 #start wind noise and warnings
 
             if player.fuel > 75:
@@ -294,9 +306,9 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                 #check to see if the player has collide with the planet
                 player.burn_sound.stop()
                 #if it has then stop the engine burning sound
-                if wind == True:
+                if wind_on == True:
                     #checks to see if wind is playing
-                    wind = functions.wind_stop(planet)
+                    wind_on = functions.wind_stop(wind)
                     #stops wind from playing
                 player, safe_landing_check, playing = functions.surface_collision(screen, resolution, player, difficulty)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
@@ -322,6 +334,9 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 
             sprite_list.draw(screen)
             #display the player on the screen
+            screen.blit(wind.image, wind.rect.topleft)
+            #draw the wind
+
             clock.tick(30)
             #ensure that at least 1/30th of a second has passed
 

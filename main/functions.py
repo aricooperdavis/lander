@@ -91,10 +91,12 @@ def resource(thing, res):
     "med_font" : 50,
     "small_font" : 30,
     "audio_icon" : [10, 10],
+    "music_icon" : [10, 70],
     "res_icon" : [660, 10],
     "title" : [675, 175],
     "subtitle" : [530, 325],
-    "mute" : [90, 25],
+    "effects" : [90, 25],
+    "music" : [90, 85],
     "display" : [750, 25],
     "exit" : [1700, 25],
     "play" : [620, 675],
@@ -121,10 +123,12 @@ def resource(thing, res):
     "med_font" : 33,
     "small_font" : 20,
     "audio_icon" : [7, 7],
+    "music_icon" : [7, 47],
     "res_icon" : [440, 7],
     "title" : [450, 117],
     "subtitle" : [353, 217],
-    "mute" : [60, 17],
+    "effects" : [60, 17],
+    "music" : [60, 57],
     "display" : [500, 17],
     "exit" : [1133, 17],
     "play" : [413, 450],
@@ -165,26 +169,31 @@ def drag(density, velocity, dragCoeff, Area):
 		F=0
 	return F
 
-def wind_start(planet, screen, level_counter, resolution):
+def wind_start(wind, screen, level_counter, resolution):
     if level_counter < 72:
         #start the wind noise twice (because sometimes it fails to work for no reason)
-        planet.wind_noise.play()
+        wind.noise.play()
         #play the noise
     font_small = pygame.font.SysFont('Courier New', resource("small_font", resolution), True, False)
     #define the font used for the warning text
     wind_warning = font_small.render("WARNNIG: HIGH WINDS DETECTED!", True, RED)
     #render the warning text
-    planet.wind_v = random.random()*0.2
+    wind.velocity_k = random.random()*0.2
     #generate random wind
     if (round(level_counter, -1)/10.0) % 2 == 0:
         #every 10 ticks
         screen.blit(wind_warning, resource("wind_warning", resolution))
         #flash the warning text
+    wind_x = (level_counter-72)*4
+    #work out wind_x from the level counter, where the last digit is the approximate velocity in arbritray units
+    wind_y = 300
+    #the height of the clouds (makes no impact to the physics)
+    wind.rect.midright = (wind_x, wind_y)
+    #tells the clouds where to spawn in
     return True
-    #return variable so we know that the wind is on
 
-def wind_stop(planet):
-    planet.wind_noise.stop()
+def wind_stop(wind):
+    wind.noise.stop()
     #turn off wind noise
     return False
     #return variable saying wind noise is off (so we don't try and turn it off twice)

@@ -64,7 +64,9 @@ title_text = large_font.render("Lander", True, WHITE)
 #renders the title text
 subtitle_text = medium_font.render("An educational physics game", True, WHITE)
 #renders the subtitle text
-mute_text = small_font.render("Toggle Mute [M]", True, WHITE)
+effects_text = small_font.render("Toggle Sound Effects [N]", True, WHITE)
+#renders option to mute effects
+music_text = small_font.render("Toggle Music [M]", True, WHITE)
 #renders the text that gives the player the option to mute music
 display_text = small_font.render("Toggle Screen Resolution [R]", True, WHITE)
 #renders the text that gives the player the option to change the screen resolution
@@ -103,6 +105,22 @@ audio_off.xy_location = functions.resource("audio_icon", resolution)
 sprite_list.add(audio_off)
 #adds the button to the list of sprites to display
 
+music_on = Buttons()
+#makes a button called music_on
+music_on.image = pygame.image.load(resource_location+"musicon.png")
+#defines the image used
+music_on.xy_location = functions.resource("music_icon", resolution)
+#defines where the button will appear
+sprite_list.add(music_on)
+
+music_off = Buttons()
+#makes a button called music_on
+music_off.image = pygame.image.load(resource_location+"musicoff.png")
+#defines the image used
+music_off.xy_location = functions.resource("music_icon", resolution)
+#defines where the button will appear
+sprite_list.add(music_off)
+
 low_res = Buttons()
 #makes a button called low_res
 low_res.image = pygame.image.load(resource_location+"low_res.png")
@@ -122,6 +140,7 @@ sprite_list.add(high_res)
 #adds the button to the list of sprites to display
 
 audio_state = True
+music_state = True
 #a variable used to define whether the music is on or off by default
 
 done = False
@@ -147,18 +166,28 @@ while not done:
                 #launches a new instance of the game which will read the new resolution from the hidden settings file
                 done = True
                 #closes the current instance of the game by dropping out of the loop
-            elif event.key == pygame.K_m:
+            elif event.key == pygame.K_n:
                 #checks to see if the "m" key was pressed
                 if audio_state == True:
                     #checks to see if the music is on
                     audio_state = False
                     #changes the audio state variable for future reference
-                    pygame.mixer.music.pause()
-                    #pauses the music
                 elif audio_state == False:
                     #checks to see if the music is off
                     audio_state = True
                     #changes the audio state variable for future reference
+            elif event.key == pygame.K_m:
+                #checks to see if the "n" key was pressed
+                if music_state == True:
+                    #checks to see if the music is on
+                    music_state = False
+                    #changes the audio state variable
+                    pygame.mixer.music.pause()
+                    #pauses the music
+                elif music_state == False:
+                    #checks to see if music is off
+                    music_state = True
+                    #changes the audio state variable
                     pygame.mixer.music.unpause()
                     #unpauses the music
             elif event.key == pygame.K_SPACE:
@@ -185,6 +214,10 @@ while not done:
         #checks to see if the current audio state is off
         screen.blit(audio_off.image, audio_off.xy_location)
         #prints the audio off button on the screen
+    if music_state == True:
+        screen.blit(music_on.image, music_on.xy_location)
+    elif music_state == False:
+        screen.blit(music_off.image, music_off.xy_location)
     if resolution == [1920, 1080]:
         #checks to see if the current resolution is high
         screen.blit(high_res.image, high_res.xy_location)
@@ -198,7 +231,8 @@ while not done:
     #print on the screen the text that appears on the title screen
     screen.blit(title_text, functions.resource("title", resolution))
     screen.blit(subtitle_text, functions.resource("subtitle", resolution))
-    screen.blit(mute_text, functions.resource("mute", resolution))
+    screen.blit(effects_text, functions.resource("effects", resolution))
+    screen.blit(music_text, functions.resource("music", resolution))
     screen.blit(display_text, functions.resource("display", resolution))
     screen.blit(exit_text, functions.resource("exit", resolution))
     screen.blit(play_text, functions.resource("play", resolution))

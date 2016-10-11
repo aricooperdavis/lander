@@ -5,7 +5,7 @@ import math
 import pygame
 #pygame gives us easy graphics toys
 
-def play(screen, clock, difficulty, muted, resource_location, resolution):
+def play(screen, clock, difficulty, audio_state, resource_location, resolution):
     #is the play function that's called by the launcher
     BLACK  = (  0,   0,   0)
     WHITE  = (255, 255, 255)
@@ -155,14 +155,14 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
     next_level = False
     #check to see if we're advancing to the next level this frame
 
-    if not muted:
-        #check to see if we're muted (i know this looks weird, but it makes sense in other contexts)
+    if not audio_state:
+        #check to see if we're audio_state (i know this looks weird, but it makes sense in other contexts)
         player.burn_sound = pygame.mixer.Sound("../resources/silence.ogg")
-        #if we are muted then set the burn sound to silence
+        #if we are audio_state then set the burn sound to silence
         player.explosion_sound = pygame.mixer.Sound("../resources/silence.ogg")
-        #if we are muted then set the explosion sound to silence
+        #if we are audio_state then set the explosion sound to silence
         player.landed_sound = pygame.mixer.Sound("../resources/silence.ogg")
-        #if we are muted then set the landed sound to silence
+        #if we are audio_state then set the landed sound to silence
 
     while in_level:
         #enables us to drop out of the level if we choose to
