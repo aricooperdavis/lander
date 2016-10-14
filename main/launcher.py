@@ -11,6 +11,7 @@ import pygame
 #pygame gives us easy graphics toys
 import level1, level2, level3
 #I've split the levels off into different scripts for ease of adding/changing them
+import video1
 
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 #this sets the system audio settings so that our game plays audio at the right speed
@@ -192,19 +193,23 @@ while not done:
                     #unpauses the music
             elif event.key == pygame.K_SPACE:
                 #checks to see if the space key was pressed
-                next_level = level1.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                next_level = video1.play(screen, clock, resolution, resource_location)
+                #next_level = level1.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                functions.fix_music(music_state)
                 #if it was then call the play function in the level1.py document i.e. the next level (the code here will wait until the level is completed then drop back in)
                 #note that the play function gets given the screen, clock, difficulty, audio_state, resource location, and resolution
                 #play will return true when the level has been beaten and the player has chosen to progress, or false if exiting out to the main menu
                 if next_level == True:
                     #if it is completed successfully then run the next level (uncomment when built)
-                    next_level = level2.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                    next_level = level1.play(screen, clock, difficulty, audio_state, resource_location, resolution)
                     if next_level == True:
-                        next_level = level3.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                        next_level = level2.play(screen, clock, difficulty, audio_state, resource_location, resolution)
                         if next_level == True:
-                            #next_level = level4.play(screen, clock, difficulty, audio_state, resource_location, resolution)
-                            #etc etc
-                            pass #do nothing (remove when levels are added)
+                            next_level = level3.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                            if next_level == True:
+                                #next_level = level4.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                                #etc etc
+                                pass #do nothing (remove when levels are added)
 
     if audio_state == True:
         #checks to see if the current audio state is on

@@ -27,9 +27,9 @@ def get_resolution():
     except:
         #runs if the file doesn't exist
         file = open("../resources/.settings.txt", "w")
-        file.write("1920x1080")
+        file.write("1280x720")
         file.close()
-        resolution = [1920, 1080]
+        resolution = [1280, 720]
     return resolution
 
 def toggle_resolution():
@@ -197,3 +197,16 @@ def wind_stop(wind):
     #turn off wind noise
     return False
     #return variable saying wind noise is off (so we don't try and turn it off twice)
+
+def fix_music(music_state):
+    if music_state == True:
+        pygame.mixer.quit()
+        pygame.mixer.init(44100, -16, 2, 2048)
+        pygame.mixer.music.load("../resources/title_sound.mp3")
+        pygame.mixer.music.play(-1)
+    elif music_state == False:
+        pygame.mixer.quit
+        pygame.mixer.init(44100, -16, 2, 2048)
+        pygame.mixer.music.load("../resources/title_sound.mp3")
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.pause()
