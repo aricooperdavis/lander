@@ -46,15 +46,19 @@ def toggle_resolution():
 
 def safe_landing(player, difficulty):
     if math.fabs(player.velocities[0]) <= difficulty and math.fabs(player.velocities[1]) <= difficulty:
-        return True
+        if player.angle <= 10 and player.angle >= -10:
+            return True
+        else:
+            return "angle"
     else:
-        return False
+        return "speed"
 
 def surface_collision(screen, resolution, player, difficulty):
     font = pygame.font.SysFont('Courier New', resource("med_font", resolution), True, False)
-    success_text = font.render("Good Landing, Captain!", True, GREEN)
+    success_text = font.render("Good Landing, Commander!", True, GREEN)
     next_level_text = font.render("Press [SPACE] to try the next level.", True, GREEN)
-    crash_text = font.render("You came in too fast, Captain!", True, RED)
+    crash_text = font.render("You came in too fast, Commander!", True, RED)
+    angle_crash_text = font.render("You need to land vertically, Commander!", True, RED)
     instruct_text = font.render("Press [A] to play again.", True, WHITE)
     exit_text = font.render("Press [ESC] to exit.", True, WHITE)
 
@@ -70,10 +74,21 @@ def surface_collision(screen, resolution, player, difficulty):
         #Set safe landing check to True
         safe_landing_check = True
         playing = False
-    else:
+    elif safe_landing(player, difficulty) == "speed":
         #If landing is crash, display try again messages
         player.explosion_sound.play()
         screen.blit(crash_text, resource("crash", resolution))
+        screen.blit(instruct_text, resource("instruct", resolution))
+        screen.blit(exit_text, resource("exit_text", resolution))
+        #And ensure craft stops moving and stays on surface
+        accel_g, player.thrust, player.velocities = 0, 0, [0, 0]
+        #Set safe landing check to False
+        safe_landing_check = False
+        playing = False
+    elif safe_landing(player, difficulty) == "angle":
+        #If landing is crash, display try again messages
+        player.explosion_sound.play()
+        screen.blit(angle_crash_text, resource("angle", resolution))
         screen.blit(instruct_text, resource("instruct", resolution))
         screen.blit(exit_text, resource("exit_text", resolution))
         #And ensure craft stops moving and stays on surface
@@ -86,9 +101,9 @@ def surface_collision(screen, resolution, player, difficulty):
 
 def object_collision(screen, resolution, player, difficulty):
     font = pygame.font.SysFont('Courier New', resource("med_font", resolution), True, False)
-    success_text = font.render("Good Landing, Captain!", True, GREEN)
+    success_text = font.render("Good Landing, Commander!", True, GREEN)
     next_level_text = font.render("Press [SPACE] to try the next level.", True, GREEN)
-    crash_text = font.render("You can't land on that, Captain!", True, RED)
+    crash_text = font.render("You can't land on that, Commander!", True, RED)
     instruct_text = font.render("Press [A] to play again.", True, WHITE)
     exit_text = font.render("Press [ESC] to exit.", True, WHITE)
 
@@ -136,6 +151,7 @@ def resource(thing, res):
     "play" : [620, 675],
     "success" : [630, 150],
     "crash" : [500, 150],
+    "angle" : [425, 150],
     "instruct" : [590, 250],
     "exit_text" : [660, 325],
     "next_level" : [450, 550],
@@ -168,6 +184,7 @@ def resource(thing, res):
     "play" : [413, 450],
     "success" : [420, 100],
     "crash" : [333, 100],
+    "angle" : [283, 100],
     "instruct" : [403, 167],
     "exit_text" : [447, 217],
     "next_level" : [303, 367],
