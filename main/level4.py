@@ -134,10 +134,10 @@ def play(screen, clock, difficulty, audio_state, resource_location, resolution):
         def __init__(self):
             super(collision_object, self).__init__()
 
-            self.image = pygame.image.load(resource_location+"danger.png").convert_alpha()
+            self.image = pygame.image.load(resource_location+"titan_lake.png").convert_alpha()
             self.rect = self.image.get_rect()
             self.mask = pygame.mask.from_surface(self.image)
-            self.rect.topleft = (400, 200)
+            self.rect.bottomright = (1280, 720)
 
     sprite_list = pygame.sprite.Group()
     #creates a list of sprites
@@ -145,10 +145,10 @@ def play(screen, clock, difficulty, audio_state, resource_location, resolution):
     #make a planet called planet
     player = Craft()
     #make a craft called player
-    danger_zone = collision_object()
-    #make a collision object called danger zone
+    titan_lake = collision_object()
+    #make a collision object called titan lake
     sprite_list.add(player)
-    sprite_list.add(danger_zone)
+    sprite_list.add(titan_lake)
     #add the player to a list of sprites
 
     font_small = pygame.font.SysFont('Courier New', functions.resource("small_font", resolution), True, False)
@@ -301,7 +301,7 @@ def play(screen, clock, difficulty, audio_state, resource_location, resolution):
                 player, safe_landing_check, playing = functions.surface_collision(screen, resolution, player, difficulty)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
 
-            if pygame.sprite.collide_mask(player, danger_zone) != None:
+            if pygame.sprite.collide_mask(player, titan_lake) != None:
                 player.burn_sound.stop()
                 player, safe_landing_check, playing = functions.object_collision(screen, resolution, player, 0)
 
