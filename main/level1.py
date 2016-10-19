@@ -53,6 +53,8 @@ def play(screen, clock, difficulty, audio_state, resource_location, resolution):
             #loads an explosion sound to be played on crashing
             self.landed_sound = pygame.mixer.Sound("../resources/landed.ogg")
             #Loads a voice-over sound to be played when landed successfully
+            self.explosion_image = pygame.image.load(resource_location+"explosion.png").convert_alpha()
+            #Loads the explosion spritesheet
 
         def update(self, accel_g):
             """ this is a function which is updated each frame to calculate where the player should next appear given their position, velocity, thrust, and the current gravity """
@@ -114,7 +116,7 @@ def play(screen, clock, difficulty, audio_state, resource_location, resolution):
             #the name to be displayed in the top left info section
             self.image = pygame.image.load(resource_location+"moon_surface.png").convert_alpha()
             #the image used for the planet surface
-            self.bg_image = resource_location+"moon.png"
+            self.bg_image = pygame.image.load(resource_location+"moon.png").convert_alpha()
             #the image used as a background for the planet (including planet surface)
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
@@ -141,8 +143,6 @@ def play(screen, clock, difficulty, audio_state, resource_location, resolution):
     font_small = pygame.font.SysFont('Courier New', functions.resource("small_font", resolution), True, False)
     #define what font will be used to print the info in the top left depending on the resolution
 
-    bg_img = pygame.image.load(planet.bg_image)
-    #load the background image from the planet class onto the screen
     player.rect.center = player.c_position
     #load the image of the player onto the screen at its current position
 
@@ -215,7 +215,7 @@ def play(screen, clock, difficulty, audio_state, resource_location, resolution):
 
             screen.fill(BLACK)
             #wipe anything from the screen
-            screen.blit(bg_img, [0,0])
+            screen.blit(planet.bg_image, [0,0])
             #display the background image on the screen
 
             player.rect.center = player.update(planet.accel_g)
@@ -282,7 +282,7 @@ def play(screen, clock, difficulty, audio_state, resource_location, resolution):
                 #check to see if the player has collide with the planet
                 player.burn_sound.stop()
                 #if it has then stop the engine burning sound
-                player, safe_landing_check, playing = functions.surface_collision(screen, resolution, player, difficulty)
+                player, safe_landing_check, playing = functions.surface_collision(screen, resolution, player, difficulty, planet)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
 
             if player.rect.center[0] < 0:

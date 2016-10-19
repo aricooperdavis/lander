@@ -53,7 +53,14 @@ def safe_landing(player, difficulty):
     else:
         return "speed"
 
-def surface_collision(screen, resolution, player, difficulty):
+def explosion(screen, resolution, player, planet):
+    for x in range(0, 5):
+        for y in range(0, 5):
+            screen.blit(player.explosion_image, (player.rect.topleft[0]-45, player.rect.topleft[1]-30), (x*130, y*130, 130, 130))
+            pygame.display.flip()
+            screen.blit(planet.bg_image, [0, 0])
+
+def surface_collision(screen, resolution, player, difficulty, planet):
     font = pygame.font.SysFont('Courier New', resource("med_font", resolution), True, False)
     success_text = font.render("Good Landing, Commander!", True, GREEN)
     next_level_text = font.render("Press [SPACE] to try the next level.", True, GREEN)
@@ -77,6 +84,7 @@ def surface_collision(screen, resolution, player, difficulty):
     elif safe_landing(player, difficulty) == "speed":
         #If landing is crash, display try again messages
         player.explosion_sound.play()
+        explosion(screen, resolution, player, planet)
         screen.blit(crash_text, resource("crash", resolution))
         screen.blit(instruct_text, resource("instruct", resolution))
         screen.blit(exit_text, resource("exit_text", resolution))
@@ -88,6 +96,7 @@ def surface_collision(screen, resolution, player, difficulty):
     elif safe_landing(player, difficulty) == "angle":
         #If landing is crash, display try again messages
         player.explosion_sound.play()
+        explosion(screen, resolution, player, planet)
         screen.blit(angle_crash_text, resource("angle", resolution))
         screen.blit(instruct_text, resource("instruct", resolution))
         screen.blit(exit_text, resource("exit_text", resolution))
