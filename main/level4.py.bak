@@ -126,13 +126,26 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             self.airDensity = 1 #for now
 			#Defines the density of the planets atmosphere
 
+    class collision_object(pygame.sprite.Sprite):
+        """Object class for collision objects"""
+        def __init__(self):
+            super(collision_object, self).__init__()
+
+            self.image = pygame.image.load(resource_location+"titan_lake.png").convert_alpha()
+            self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image)
+            self.rect.bottomright = (1280, 720)
+
     sprite_list = pygame.sprite.Group()
     #creates a list of sprites
     planet = Planet()
     #make a planet called planet
     player = Craft()
     #make a craft called player
+    titan_lake = collision_object()
+    #make a collision object called titan lake
     sprite_list.add(player)
+    sprite_list.add(titan_lake)
     #add the player to a list of sprites
 
     font_small = pygame.font.SysFont('Courier New', functions.resource("small_font", resolution), True, False)

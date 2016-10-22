@@ -1,5 +1,6 @@
 #!/usr/bin/python
 #The above is a shebang for executing on Mac/Linux systems (must use chmod +x filname.py and execute using ./filename.py)
+#Not even sure if this runs on Mac/Linux systems easily due to issues with outdated pygame libraries
 
 import functions
 #I've split functions off into a different script for ease of editing/adding new levels/resolutions etc

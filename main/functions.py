@@ -58,7 +58,7 @@ def explosion(screen, resolution, player, planet):
         for y in range(0, 5):
             screen.blit(player.explosion_image, (player.rect.topleft[0]-45, player.rect.topleft[1]-30), (x*130, y*130, 130, 130))
             pygame.display.flip()
-            screen.blit(planet.bg_image, [0, 0])
+            screen.blit(planet.bg_image, (0, 0), (0, player.last_altitude, resolution[0], resolution[1]))
 
 def surface_collision(screen, resolution, player, difficulty, planet):
     font = pygame.font.SysFont('Courier New', resource("med_font", resolution), True, False)
@@ -198,7 +198,7 @@ def resource(thing, res):
     "exit_text" : [447, 217],
     "next_level" : [303, 367],
     "init_velocity" : [6, 6],
-    "init_position" : [70, 50],
+    "init_position" : (int(res[0]/2), int(res[1]/2)),
     "x_vel_txt" : [10, 10],
     "y_vel_txt" : [10, 30],
     "fuel_txt" : [10, 50],
@@ -229,35 +229,6 @@ def drag(density, velocity, dragCoeff, Area):
 		F=0
 	return F
 
-def wind_start(wind, screen, level_counter, resolution):
-    if level_counter < 72:
-        #start the wind noise twice (because sometimes it fails to work for no reason)
-        wind.noise.play()
-        #play the noise
-    font_small = pygame.font.SysFont('Courier New', resource("small_font", resolution), True, False)
-    #define the font used for the warning text
-    wind_warning = font_small.render("WARNNIG: HIGH WINDS DETECTED!", True, RED)
-    #render the warning text
-    wind.velocity_k = random.random()*0.2
-    #generate random wind
-    if (round(level_counter, -1)/10.0) % 2 == 0:
-        #every 10 ticks
-        screen.blit(wind_warning, resource("wind_warning", resolution))
-        #flash the warning text
-    wind_x = (level_counter-72)*4
-    #work out wind_x from the level counter, where the last digit is the approximate velocity in arbritray units
-    wind_y = 300
-    #the height of the clouds (makes no impact to the physics)
-    wind.rect.midright = (wind_x, wind_y)
-    #tells the clouds where to spawn in
-    return True
-
-def wind_stop(wind):
-    wind.noise.stop()
-    #turn off wind noise
-    return False
-    #return variable saying wind noise is off (so we don't try and turn it off twice)
-
 def fix_music(music_state):
     if music_state == True:
         pygame.mixer.quit()
@@ -270,3 +241,26 @@ def fix_music(music_state):
         pygame.mixer.music.load("../resources/title_sound.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.pause()
+
+def player_planet_motion(player, planet, screen, resolution):
+    player.altitude += player.velocities[1]
+    if player.altitude < 0:
+        player.rect.center = (player.c_position[0]+int(round(player.velocities[0])), player.c_position[1]+int(round(player.velocities[1])))
+        screen.blit(planet.bg_image, [0, 0], (0, 0, resolution[0], resolution[1]))
+        player.c_position = player.rect.center
+    elif player.altitude <= resolution[1]*3:
+        screen.blit(planet.bg_image, [0, 0], (0, player.altitude, resolution[0], resolution[1]))
+        player.rect.center = (player.c_position[0]+int(round(player.velocities[0])), player.c_position[1])
+        player.c_position = player.rect.center
+        player.last_altitude = player.altitude
+    else:
+        player.rect.center = (player.c_position[0]+int(round(player.velocities[0])), player.c_position[1]+int(round(player.velocities[1])))
+        screen.blit(planet.bg_image, [0, 0], (0, player.last_altitude, resolution[0], resolution[1]))
+        player.c_position = player.rect.center
+
+    if player.rect.center[0] < 0:
+        player.rect.center = (player.rect.center[0]+resolution[0], player.rect.center[1])
+        player.c_position = player.rect.center
+    elif player.rect.center[0] > resolution[0]:
+        player.rect.center = (player.rect.center[0]-resolution[0], player.rect.center[1])
+        player.c_position = player.rect.center

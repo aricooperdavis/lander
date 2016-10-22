@@ -55,8 +55,12 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #Loads a voice-over sound to be played when landed successfully
             self.explosion_image = pygame.image.load(resource_location+"explosion.png").convert_alpha()
             #Loads the explosion spritesheet
+            self.altitude = 0
+            #effective altitude of player above planet surface for determining player/background interactions
+            self.last_altitude = 0
+            #variable for saving the previous altitude
 
-        def update(self, accel_g):
+        def update(self, planet):
             """ this is a function which is updated each frame to calculate where the player should next appear given their position, velocity, thrust, and the current gravity """
             if self.fuel <= 0.0:
                 #checks to see if the fuel is empty (or less than empty since the fuel rate is simply subtracted from the total fuel)
@@ -82,14 +86,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             drag_decel_y = (self.drag_y)/lander_mass
 			#vertical deceleration due to drag
 
-            self.velocities = (self.velocities[0]+self.x_thrust-drag_decel_x+wind.velocity_k, self.velocities[1]+accel_g-self.y_thrust-drag_decel_y)
+            self.velocities = (self.velocities[0]+self.x_thrust-drag_decel_x, self.velocities[1]+planet.accel_g-self.y_thrust-drag_decel_y)
             #changes the players velocity by adding gravity, thrust and drag deceleration
-
-            self.rect.center = (self.c_position[0]+int(round(self.velocities[0])), self.c_position[1]+int(round(self.velocities[1])))
-            #moves the centre of the image for the player by adding on the velocity
-
-            self.c_position = player.rect.center
-            #sets the players current position to the centre of the image that describes it for the next pass
 
             if self.thrust == 0:
                 #checks to see if the player is not thrusting
@@ -104,9 +102,6 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             self.image = pygame.transform.rotate(self.image, -1*player.angle)
             #rotates the image of the player by its current angle
 
-            return self.rect.center
-            #returns the coordinates for the centre of the player
-
     class Planet(pygame.sprite.Sprite):
         """Object class for planet"""
         def __init__(self):
@@ -116,7 +111,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #the name to be displayed in the top left info section
             self.image = pygame.image.load(resource_location+"mars_surface.png").convert_alpha()
             #the image used for the planet surface
-            self.bg_image = pygame.image.load(resource_location+"mars.png").convert_alpha()
+            self.bg_image = pygame.image.load(resource_location+"mars_long.png").convert_alpha()
             #the image used as a background for the planet (including planet surface)
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
@@ -131,25 +126,12 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             self.airDensity = 1 #for now
 			#Defines the density of the planets atmosphere
 
-    class Obstacles(pygame.sprite.Sprite):
-        """Object class for wind/other things to crash into"""
-        def __init__(self):
-            super(Obstacles, self).__init__()
-            self.image = pygame.image.load(resource_location+"dust.png").convert_alpha()
-            self.rect = self.image.get_rect()
-            self.rect.midright = [0, 0]
-            #hide wind by default
-            self.velocity_k = 0
-            self.noise = pygame.mixer.Sound("../resources/wind_noise.ogg")
-
     sprite_list = pygame.sprite.Group()
     #creates a list of sprites
     planet = Planet()
     #make a planet called planet
     player = Craft()
     #make a craft called player
-    wind = Obstacles()
-    #make an obstacle called wind
     sprite_list.add(player)
     #add the player to a list of sprites
 
@@ -167,8 +149,6 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
     #check to see if we've landed safely
     next_level = False
     #check to see if we're advancing to the next level this frame
-    wind_on = False
-    #defaults to no wind
 
     if not muted:
         #check to see if we're muted (i know this looks weird, but it makes sense in other contexts)
@@ -178,12 +158,9 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
         #if we are muted then set the explosion sound to silence
         player.landed_sound = pygame.mixer.Sound("../resources/silence.ogg")
         #if we are muted then set the landed sound to silence
-        wind.noise = pygame.mixer.Sound("../resources/silence.ogg")
-        #if we are muted then set the wind noise to silence
 
     while in_level:
         #enables us to drop out of the level if we choose to
-        level_counter = 0
         while playing:
             #if the game is running
             for event in pygame.event.get():
@@ -233,11 +210,10 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 
             screen.fill(BLACK)
             #wipe anything from the screen
-            screen.blit(planet.bg_image, [0,0])
-            #display the background image on the screen
-
-            player.rect.center = player.update(planet.accel_g)
+            player.update(planet)
             #update the center of the player based on the update function defined in the craft definition at the top
+            functions.player_planet_motion(player, planet, screen, resolution)
+            #determine player/background interactions for final position
 
             drag_txt_x = font_small.render("Horizontal Drag: "+str(round(player.drag_x)), True, WHITE)
 			#creates the text that says what horizontal drag is
@@ -261,13 +237,6 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                 y_vel_txt = font_small.render("Vertical velocity: "+str(round(player.velocities[1], 1)), True, GREEN)
                 #if its not then create the text that shows horizontal velocity in green
 
-            level_counter += 1
-            #a counter for timed events
-            if level_counter > 70:
-                #after 70 ticks
-                wind_on = functions.wind_start(wind, screen, level_counter, resolution)
-                #start wind noise and warnings
-
             if player.fuel > 75:
                 #check to see if the fuel is more than 75 percent full
                 fuel_txt = font_small.render("Fuel: "+str(player.fuel)+"%", True, GREEN)
@@ -289,6 +258,25 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                 fuel_txt = font_small.render("Fuel: 0% [FUEL EMPTY]", True, RED)
                 #if there's not then display that in red
 
+            if pygame.sprite.collide_mask(player, planet) != None:
+                #check to see if the player has collide with the planet
+                player.burn_sound.stop()
+                #if it has then stop the engine burning sound
+                player, safe_landing_check, playing = functions.surface_collision(screen, resolution, player, difficulty, planet)
+                #call the safe landing check function described above, and remember whether the landing was safe or not
+
+            sprite_list.draw(screen)
+            #display the player on the screen
+            clock.tick(30)
+            #ensure that at least 1/30th of a second has passed
+
+            frame_rate = clock.get_fps()
+            #gets the current framerate of the game
+            frame_rate_txt = font_small.render("FPS: "+str(round(frame_rate, 1)), True, WHITE)
+            #generates text to render that frame rate
+            screen.blit(frame_rate_txt, functions.resource("frame_rate_txt", resolution))
+            #prints that text on the screen in an appropriate place for the chosen resolution
+
             screen.blit(x_vel_txt, functions.resource("x_vel_txt", resolution))
             #display the horizontal velocity text on the screen (in a place appropraite for the resolution)
             screen.blit(y_vel_txt, functions.resource("y_vel_txt", resolution))
@@ -301,51 +289,6 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 			#display the horizontal drag text on the screen
             screen.blit(drag_txt_y, functions.resource("drag_txt_y", resolution))
 			#display the horizontal drag text on the screen
-
-            if pygame.sprite.collide_mask(player, planet) != None:
-                #check to see if the player has collide with the planet
-                player.burn_sound.stop()
-                #if it has then stop the engine burning sound
-                if wind_on == True:
-                    #checks to see if wind is playing
-                    wind_on = functions.wind_stop(wind)
-                    #stops wind from playing
-                player, safe_landing_check, playing = functions.surface_collision(screen, resolution, player, difficulty, planet)
-                #call the safe landing check function described above, and remember whether the landing was safe or not
-
-            if player.rect.center[0] < 0:
-                #check to see if the player is more than half off the left hand side of the screen
-                player.rect.center = (player.rect.center[0]+resolution[0], player.rect.center[1])
-                #if it is then put the player on the right hand side of the screen
-                player.c_position = player.rect.center
-                #and update the players position so that calculations work in the next pass
-            elif player.rect.center[0] > resolution[0]:
-                #check to see if the player is more than half off the right hand side of the screen (depends on the resolution)
-                player.rect.center = (player.rect.center[0]-resolution[0], player.rect.center[1])
-                #if it is then put the player on the left hand side of the screen
-                player.c_position = player.rect.center
-                #and update its position
-            elif player.rect.center[1] < 0:
-                #check to see if the player is falling off the top of the screen
-                player.rect.center = (player.rect.center[0], 0)
-                #if it is then stop it moving further up
-                player.c_position = player.rect.center
-                #and remember this for the next pass
-
-            sprite_list.draw(screen)
-            #display the player on the screen
-            screen.blit(wind.image, wind.rect.topleft)
-            #draw the wind
-
-            clock.tick(30)
-            #ensure that at least 1/30th of a second has passed
-
-            frame_rate = clock.get_fps()
-            #gets the current framerate of the game
-            frame_rate_txt = font_small.render("FPS: "+str(round(frame_rate, 1)), True, WHITE)
-            #generates text to render that frame rate
-            screen.blit(frame_rate_txt, functions.resource("frame_rate_txt", resolution))
-            #prints that text on the screen in an appropriate place for the chosen resolution
 
             pygame.display.flip()
             #show the screen to the user
@@ -370,6 +313,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                     #reset the player thrust
                     player.fuel = 100
                     #reset the player fuel
+                    player.altitude = 0
+                    #resets the player altitude
                     playing = True
                     #get back into the playing loop
                 if event.key == pygame.K_SPACE:
@@ -384,6 +329,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                     #reset the player thrust
                     player.fuel = 100
                     #reset the player fuel
+                    player.altitude = 0
+                    #resets the player altitude
                     if safe_landing_check == True:
                         #check if the landing was safe
                         next_level = True

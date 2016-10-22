@@ -107,11 +107,11 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
         def __init__(self):
             super(Planet, self).__init__()
 
-            self.name = "Titan"
+            self.name = "Mars"
             #the name to be displayed in the top left info section
-            self.image = pygame.image.load(resource_location+"titan_surface.png").convert_alpha()
+            self.image = pygame.image.load(resource_location+"mars_surface.png").convert_alpha()
             #the image used for the planet surface
-            self.bg_image = pygame.image.load(resource_location+"titan_long.png").convert_alpha()
+            self.bg_image = pygame.image.load(resource_location+"mars_long.png").convert_alpha()
             #the image used as a background for the planet (including planet surface)
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
@@ -126,12 +126,25 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             self.airDensity = 1 #for now
 			#Defines the density of the planets atmosphere
 
+    class Obstacles(pygame.sprite.Sprite):
+        """Object class for wind/other things to crash into"""
+        def __init__(self):
+            super(Obstacles, self).__init__()
+            self.image = pygame.image.load(resource_location+"dust.png").convert_alpha()
+            self.rect = self.image.get_rect()
+            self.rect.midright = [0, 0]
+            #hide wind by default
+            self.velocity_k = 0
+            self.noise = pygame.mixer.Sound("../resources/wind_noise.ogg")
+
     sprite_list = pygame.sprite.Group()
     #creates a list of sprites
     planet = Planet()
     #make a planet called planet
     player = Craft()
     #make a craft called player
+    wind = Obstacles()
+    #make an obstacle called wind
     sprite_list.add(player)
     #add the player to a list of sprites
 
@@ -149,6 +162,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
     #check to see if we've landed safely
     next_level = False
     #check to see if we're advancing to the next level this frame
+    wind_on = False
+    #defaults to no wind
 
     if not muted:
         #check to see if we're muted (i know this looks weird, but it makes sense in other contexts)
@@ -158,6 +173,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
         #if we are muted then set the explosion sound to silence
         player.landed_sound = pygame.mixer.Sound("../resources/silence.ogg")
         #if we are muted then set the landed sound to silence
+        wind.noise = pygame.mixer.Sound("../resources/silence.ogg")
+        #if we are muted then set the wind noise to silence
 
     while in_level:
         #enables us to drop out of the level if we choose to
@@ -262,6 +279,10 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                 #check to see if the player has collide with the planet
                 player.burn_sound.stop()
                 #if it has then stop the engine burning sound
+                if wind_on == True:
+                    #checks to see if wind is playing
+                    wind_on = functions.wind_stop(wind)
+                    #stops wind from playing
                 player, safe_landing_check, playing = functions.surface_collision(screen, resolution, player, difficulty, planet)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
 
