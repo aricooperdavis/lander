@@ -113,6 +113,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #the image used for the planet surface
             self.bg_image = pygame.image.load(resource_location+"moon_long.png").convert_alpha()
             #the image used as a background for the planet (including planet surface)
+            self.map = pygame.image.load(resource_location+"moon_map.png").convert_alpha()
+            #load the image for the map
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
             self.mask = pygame.mask.from_surface(self.image)

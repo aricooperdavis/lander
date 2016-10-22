@@ -244,18 +244,28 @@ def fix_music(music_state):
 
 def player_planet_motion(player, planet, screen, resolution):
     player.altitude += player.velocities[1]
+
     if player.altitude < 0:
         player.rect.center = (player.c_position[0]+int(round(player.velocities[0])), player.c_position[1]+int(round(player.velocities[1])))
         screen.blit(planet.bg_image, [0, 0], (0, 0, resolution[0], resolution[1]))
+        screen.blit(planet.map, (resolution[0]-148, 20))
+        pygame.draw.rect(screen, WHITE, (resolution[0]-150, 18, 131, 291), 2)
+        pygame.draw.rect(screen, ORANGE, (resolution[0]-150, 18, 131, 76), 2)
         player.c_position = player.rect.center
     elif player.altitude <= resolution[1]*3:
         screen.blit(planet.bg_image, [0, 0], (0, player.altitude, resolution[0], resolution[1]))
+        screen.blit(planet.map, (resolution[0]-148, 20))
+        pygame.draw.rect(screen, WHITE, (resolution[0]-150, 18, 131, 291), 2)
+        pygame.draw.rect(screen, ORANGE, (resolution[0]-150, int(player.altitude/10)+18, 131, 76), 2)
         player.rect.center = (player.c_position[0]+int(round(player.velocities[0])), player.c_position[1])
         player.c_position = player.rect.center
         player.last_altitude = player.altitude
     else:
         player.rect.center = (player.c_position[0]+int(round(player.velocities[0])), player.c_position[1]+int(round(player.velocities[1])))
         screen.blit(planet.bg_image, [0, 0], (0, player.last_altitude, resolution[0], resolution[1]))
+        screen.blit(planet.map, (resolution[0]-148, 20))
+        pygame.draw.rect(screen, WHITE, (resolution[0]-150, 18, 131, 291), 2)
+        pygame.draw.rect(screen, ORANGE, (resolution[0]-150, int(player.last_altitude/10)+18, 131, 76), 2)
         player.c_position = player.rect.center
 
     if player.rect.center[0] < 0:
