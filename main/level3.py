@@ -75,7 +75,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             self.y_thrust = (self.thrust * math.cos(math.radians(float(self.angle))))
             #takes the thrust on the player and the players angle and works out the y component of that thrust
 
-            self.drag_x = functions.drag(planet.airDensity,self.velocities[0],1,1)
+            self.drag_x = functions.drag(planet.airDensity,(self.velocities[0]-(wind.velocity_k)),1,1)
 			#calculates drag for x axis
             self.drag_y = functions.drag(planet.airDensity,self.velocities[1],1,1)
 			#calculates drag for y axis
@@ -127,6 +127,17 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #the thrust that the player can exert (don't ask me why I put this in this section...)
             self.airDensity = 1 #for now
 			#Defines the density of the planets atmosphere
+			
+    class Obstacles(pygame.sprite.Sprite):
+        """Object class for wind/other things to crash into"""
+        def __init__(self):
+            super(Obstacles, self).__init__()
+            self.image = pygame.image.load(resource_location+"dust.png").convert_alpha()
+            self.rect = self.image.get_rect()
+            self.rect.midright = [0, 0]
+            #hide wind by default
+            self.velocity_k = 0
+            self.noise = pygame.mixer.Sound("../resources/wind_noise.ogg")
 
     sprite_list = pygame.sprite.Group()
     #creates a list of sprites
@@ -134,6 +145,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
     #make a planet called planet
     player = Craft()
     #make a craft called player
+    wind = Obstacles()
+    #make an obstacle called wind
     sprite_list.add(player)
     #add the player to a list of sprites
 
@@ -151,6 +164,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
     #check to see if we've landed safely
     next_level = False
     #check to see if we're advancing to the next level this frame
+    wind_on = False
+    #defaults to no wind
 
     if not muted:
         #check to see if we're muted (i know this looks weird, but it makes sense in other contexts)
@@ -163,6 +178,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 
     while in_level:
         #enables us to drop out of the level if we choose to
+        level_counter = 0
         while playing:
             #if the game is running
             for event in pygame.event.get():
@@ -221,6 +237,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 			#creates the text that says what horizontal drag is
             drag_txt_y = font_small.render("Vertical Drag: "+str(round(player.drag_y)), True, WHITE)
 			#creates the text that says what Vertical drag is
+            wind_speed_txt = font_small.render("Wind Speed: "+str(round(wind.velocity_k)), True, WHITE)
+			#creates the text that says what Vertical drag is
 
             planet_tag = font_small.render("Planet: "+str(planet.name), True, WHITE)
             #create the text that names the planet
@@ -238,6 +256,13 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             else:
                 y_vel_txt = font_small.render("Vertical velocity: "+str(round(player.velocities[1], 1)), True, GREEN)
                 #if its not then create the text that shows horizontal velocity in green
+				
+            level_counter += 1
+            #a counter for timed events
+            if level_counter > 70:
+                #after 70 ticks
+                wind_on = functions.wind_start(wind, screen, level_counter, resolution)
+                #start wind noise and warnings
 
             if player.fuel > 75:
                 #check to see if the fuel is more than 75 percent full
@@ -291,6 +316,8 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 			#display the horizontal drag text on the screen
             screen.blit(drag_txt_y, functions.resource("drag_txt_y", resolution))
 			#display the horizontal drag text on the screen
+            screen.blit(wind_speed_txt,functions.resource("wind_speed",resolution))
+			#displays wind speed
 
             pygame.display.flip()
             #show the screen to the user
