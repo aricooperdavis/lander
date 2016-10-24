@@ -19,9 +19,6 @@ pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 #this gets pygame ready to start displaying things
 
-resolution = functions.get_resolution()
-#calls our get_resolution function in the functions script which reads the desired resolution from a hidden preferences file (or creates that file with a default resolution if the file hasn't been made yet)
-
 WHITE = (255, 255, 255)
 BLACK = (  0,   0,   0)
 #defines the colours white and black for white text and to clear the screen of old images
@@ -30,18 +27,15 @@ difficulty = 7
 #this is set at this screen so that we have have editable difficulty levels in the future
 #it is essentially the maximum horizontal/vertical speed that the craft can survive landing at
 
-resource_location = functions.resource("location", resolution)
-#tells the program where to find our graphics depending on the desired resolution (as changing the res of the graphics each time slows the game down too much)
-
-icon = pygame.image.load(resource_location+"player_l.png")
+icon = pygame.image.load("../resources/images/player_l.png")
 #loads up the application icon from the resources folder
 pygame.display.set_icon(icon)
 #tells pygame to use the previously loaded application icon as the application icon
-screen = pygame.display.set_mode(resolution)
+screen = pygame.display.set_mode((1280,720))
 #sets the screen size to that defined by the resolution that is in the hidden settings file
 pygame.display.set_caption("Lander")
 #sets the title of the window to "Lander"
-background_image = pygame.image.load(resource_location+"launcher.jpg")
+background_image = pygame.image.load("../resources/images/launcher.jpg")
 #loads up a splash-screen background image from the relevant resolution resources folder
 screen.fill(BLACK)
 #clears the screen
@@ -50,16 +44,16 @@ screen.blit(background_image, [0,0])
 
 clock = pygame.time.Clock()
 #gives us a steady time (for playing music and counting frames per second)
-pygame.mixer.music.load("../resources/title_sound.mp3")
+pygame.mixer.music.load("../resources/audio/title_sound.mp3")
 #loads up the background music
 pygame.mixer.music.play(-1)
 #gets the background music playing on loop
 
-large_font = pygame.font.SysFont('Courier New', functions.resource("large_font", resolution), True, False)
+large_font = pygame.font.SysFont('Courier New', 100, True, False)
 #defines the font for pygame to use for large things, using sizes in the functions file so that it obeys resoultion changes
-medium_font = pygame.font.SysFont('Courier New', functions.resource("med_font", resolution), True, False)
+medium_font = pygame.font.SysFont('Courier New', 33, True, False)
 #same as above but for medium fonts
-small_font = pygame.font.SysFont('Courier New', functions.resource("small_font", resolution), True, False)
+small_font = pygame.font.SysFont('Courier New', 20, True, False)
 #same as above but for small fonts
 
 title_text = large_font.render("Lander", True, WHITE)
@@ -70,8 +64,6 @@ effects_text = small_font.render("Toggle Sound Effects [N]", True, WHITE)
 #renders option to mute effects
 music_text = small_font.render("Toggle Music [M]", True, WHITE)
 #renders the text that gives the player the option to mute music
-display_text = small_font.render("Toggle Screen Resolution [R]", True, WHITE)
-#renders the text that gives the player the option to change the screen resolution
 exit_text = small_font.render("Exit [ESC]", True, WHITE)
 #renders the text that tells the player how to exit
 play_text = medium_font.render("Press [SPACE] to Start", True, WHITE)
@@ -91,55 +83,37 @@ sprite_list = pygame.sprite.Group()
 
 audio_on = Buttons()
 #makes a button called audio_on
-audio_on.image = pygame.image.load(resource_location+"unmuted.png")
+audio_on.image = pygame.image.load("../resources/images/unmuted.png")
 #defines the image used for the button
-audio_on.xy_location = functions.resource("audio_icon", resolution)
+audio_on.xy_location = (7, 7)
 #defines where the button will appear
 sprite_list.add(audio_on)
 #adds the button to the list of sprites to display
 
 audio_off = Buttons()
 #makes a button called audio_off
-audio_off.image = pygame.image.load(resource_location+"muted.png")
+audio_off.image = pygame.image.load("../resources/images/muted.png")
 #defines the image used for the button
-audio_off.xy_location = functions.resource("audio_icon", resolution)
+audio_off.xy_location = (7, 7)
 #defines where the button will appear
 sprite_list.add(audio_off)
 #adds the button to the list of sprites to display
 
 music_on = Buttons()
 #makes a button called music_on
-music_on.image = pygame.image.load(resource_location+"musicon.png")
+music_on.image = pygame.image.load("../resources/images/musicon.png")
 #defines the image used
-music_on.xy_location = functions.resource("music_icon", resolution)
+music_on.xy_location = (7, 47)
 #defines where the button will appear
 sprite_list.add(music_on)
 
 music_off = Buttons()
 #makes a button called music_on
-music_off.image = pygame.image.load(resource_location+"musicoff.png")
+music_off.image = pygame.image.load("../resources/images/musicoff.png")
 #defines the image used
-music_off.xy_location = functions.resource("music_icon", resolution)
+music_off.xy_location = (7, 47)
 #defines where the button will appear
 sprite_list.add(music_off)
-
-low_res = Buttons()
-#makes a button called low_res
-low_res.image = pygame.image.load(resource_location+"low_res.png")
-#defines the image used for the button
-low_res.xy_location = functions.resource("res_icon", resolution)
-#defines where the button will appear
-sprite_list.add(low_res)
-#adds the button to the list of sprites to display
-
-high_res = Buttons()
-#makes a button called high_res
-high_res.image = pygame.image.load(resource_location+"high_res.png")
-#defines the image used for the button
-high_res.xy_location = low_res.xy_location = functions.resource("res_icon", resolution)
-#defines where the button will appear
-sprite_list.add(high_res)
-#adds the button to the list of sprites to display
 
 audio_state = True
 music_state = True
@@ -160,14 +134,6 @@ while not done:
                 #checks to see if ESC was pressed
                 done = True
                 #drops out of the loop if it has been
-            elif event.key == pygame.K_r:
-                #checks to see if the "r" key was pressed
-                resolution, resource_location = functions.toggle_resolution()
-                #calls a function to change the resolution in the hidden settings file
-                subprocess.Popen("python launcher.py")
-                #launches a new instance of the game which will read the new resolution from the hidden settings file
-                done = True
-                #closes the current instance of the game by dropping out of the loop
             elif event.key == pygame.K_n:
                 #checks to see if the "m" key was pressed
                 if audio_state == True:
@@ -194,21 +160,21 @@ while not done:
                     #unpauses the music
             elif event.key == pygame.K_SPACE:
                 #checks to see if the space key was pressed
-                next_level = video1.play(screen, clock, resolution, resource_location)
-                #next_level = level1.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                next_level = video1.play(screen, clock)
+                #next_level = level1.play(screen, clock, difficulty, audio_state)
                 functions.fix_music(music_state)
                 #if it was then call the play function in the level1.py document i.e. the next level (the code here will wait until the level is completed then drop back in)
                 #note that the play function gets given the screen, clock, difficulty, audio_state, resource location, and resolution
                 #play will return true when the level has been beaten and the player has chosen to progress, or false if exiting out to the main menu
                 if next_level == True:
                     #if it is completed successfully then run the next level (uncomment when built)
-                    next_level = level1.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                    next_level = level1.play(screen, clock, difficulty, audio_state)
                     if next_level == True:
-                        next_level = level2.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                        next_level = level2.play(screen, clock, difficulty, audio_state)
                         if next_level == True:
-                            next_level = level3.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                            next_level = level3.play(screen, clock, difficulty, audio_state)
                             if next_level == True:
-                                next_level = level4.play(screen, clock, difficulty, audio_state, resource_location, resolution)
+                                next_level = level4.play(screen, clock, difficulty, audio_state)
                                 if next_level == True:
                                     #etc etc
                                     pass #do nothing (remove when levels are added)
@@ -225,24 +191,14 @@ while not done:
         screen.blit(music_on.image, music_on.xy_location)
     elif music_state == False:
         screen.blit(music_off.image, music_off.xy_location)
-    if resolution == [1920, 1080]:
-        #checks to see if the current resolution is high
-        screen.blit(high_res.image, high_res.xy_location)
-        #prints the high resolution button on the screen
-    elif resolution == [1280, 720]:
-        #checks to see if the current resolution is low
-        screen.blit(low_res.image, low_res.xy_location)
-        #prints the low resolution button on the screen
-
 
     #print on the screen the text that appears on the title screen
-    screen.blit(title_text, functions.resource("title", resolution))
-    screen.blit(subtitle_text, functions.resource("subtitle", resolution))
-    screen.blit(effects_text, functions.resource("effects", resolution))
-    screen.blit(music_text, functions.resource("music", resolution))
-    screen.blit(display_text, functions.resource("display", resolution))
-    screen.blit(exit_text, functions.resource("exit", resolution))
-    screen.blit(play_text, functions.resource("play", resolution))
+    screen.blit(title_text, [450, 117])
+    screen.blit(subtitle_text, [353, 217])
+    screen.blit(effects_text, [60, 17])
+    screen.blit(music_text, [60, 57])
+    screen.blit(exit_text, [1133, 17])
+    screen.blit(play_text, [413, 450])
 
     clock.tick(30)
     #essentially defines the maximum frame rate whilst keeping CPU usage low; frame rate may still be way lower than this

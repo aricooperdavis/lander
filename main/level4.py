@@ -5,7 +5,7 @@ import math
 import pygame
 #pygame gives us easy graphics toys
 
-def play(screen, clock, difficulty, muted, resource_location, resolution):
+def play(screen, clock, difficulty, muted):
     #is the play function that's called by the launcher
     BLACK  = (  0,   0,   0)
     WHITE  = (255, 255, 255)
@@ -27,15 +27,15 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
         def __init__(self):
             super(Craft, self).__init__()
 
-            self.image = pygame.image.load(resource_location+"player_l.png").convert_alpha()
+            self.image = pygame.image.load("../resources/images/player_l.png").convert_alpha()
             #takes an image from the resources folder appropriate to the resolution to be used as the player
             self.rect = self.image.get_rect()
             #gets pygame to automatically work out the boundaries of the player
             self.mask = pygame.mask.from_surface(self.image)
             #gets pygame to build a mask that goes around the edge of the player for collision detection
-            self.velocities = functions.resource("init_velocity", resolution)
+            self.velocities = (6, 6)
             #variable stores the players velocity and is defaulted to an intial velocity value stored in the functions script
-            self.c_position = functions.resource("init_position", resolution)
+            self.c_position = (640, 360)
             #stores the players current position and is defaulted to a intial position value stored in the functions script
             self.angle = 0
             #stores the players angle and is defaulted to vertical
@@ -47,13 +47,13 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #stores a value for the amount of fuel that the player has
             self.fuel_rate = 0.2
             #defines the rate at which fuel is burnt for every frame in which the up arrow is pressed
-            self.burn_sound = pygame.mixer.Sound("../resources/burn.ogg")
+            self.burn_sound = pygame.mixer.Sound("../resources/audio/burn.ogg")
             #loads a burn sound to be played whilst thrusting
-            self.explosion_sound = pygame.mixer.Sound("../resources/explosion.ogg")
+            self.explosion_sound = pygame.mixer.Sound("../resources/audio/explosion.ogg")
             #loads an explosion sound to be played on crashing
-            self.landed_sound = pygame.mixer.Sound("../resources/landed.ogg")
+            self.landed_sound = pygame.mixer.Sound("../resources/audio/landed.ogg")
             #Loads a voice-over sound to be played when landed successfully
-            self.explosion_image = pygame.image.load(resource_location+"explosion.png").convert_alpha()
+            self.explosion_image = pygame.image.load("../resources/images/explosion.png").convert_alpha()
             #Loads the explosion spritesheet
             self.altitude = 0
             #effective altitude of player above planet surface for determining player/background interactions
@@ -91,13 +91,13 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 
             if self.thrust == 0:
                 #checks to see if the player is not thrusting
-                self.image = pygame.image.load(resource_location+"player_l.png").convert_alpha()
+                self.image = pygame.image.load("../resources/images/player_l.png").convert_alpha()
                 #ensures that the image describing the player is does not have flames coming out the bottom
             elif self.thrust != 0:
                 #checks to see if the player is thrusting
                 self.fuel -= self.fuel_rate
                 #subtracts the amount of fuel previously set from the amount of fuel left
-                self.image = pygame.image.load(resource_location+"player_ld.png").convert_alpha()
+                self.image = pygame.image.load("../resources/images/player_ld.png").convert_alpha()
                 #ensures that the image of the player has flames coming out of the bottom
             self.image = pygame.transform.rotate(self.image, -1*player.angle)
             #rotates the image of the player by its current angle
@@ -109,11 +109,11 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 
             self.name = "Titan"
             #the name to be displayed in the top left info section
-            self.image = pygame.image.load(resource_location+"titan_surface.png").convert_alpha()
+            self.image = pygame.image.load("../resources/images/titan_surface.png").convert_alpha()
             #the image used for the planet surface
-            self.bg_image = pygame.image.load(resource_location+"titan_long.png").convert_alpha()
+            self.bg_image = pygame.image.load("../resources/images/titan_long.png").convert_alpha()
             #the image used as a background for the planet (including planet surface)
-            self.map = pygame.image.load(resource_location+"titan_map.png").convert_alpha()
+            self.map = pygame.image.load("../resources/images/titan_map.png").convert_alpha()
             #map image
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
@@ -121,7 +121,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #works out the border of the surface for collision detection
             self.accel_g = 0.23
             #the acceleration due to gravity from the planet
-            self.rect.bottomleft = (0, resolution[1])
+            self.rect.bottomleft = (0, 720)
             #ensuring that the planet surface lines up with the bottom of the screen (which is resolution dependant unless we had huge images)
             self.thrust = 0.5
             #the thrust that the player can exert (don't ask me why I put this in this section...)
@@ -137,7 +137,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
     sprite_list.add(player)
     #add the player to a list of sprites
 
-    font_small = pygame.font.SysFont('Courier New', functions.resource("small_font", resolution), True, False)
+    font_small = pygame.font.SysFont('Courier New', 20, True, False)
     #define what font will be used to print the info in the top left depending on the resolution
 
     player.rect.center = player.c_position
@@ -154,11 +154,11 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
 
     if not muted:
         #check to see if we're muted (i know this looks weird, but it makes sense in other contexts)
-        player.burn_sound = pygame.mixer.Sound("../resources/silence.ogg")
+        player.burn_sound = pygame.mixer.Sound("../resources/audio/silence.ogg")
         #if we are muted then set the burn sound to silence
-        player.explosion_sound = pygame.mixer.Sound("../resources/silence.ogg")
+        player.explosion_sound = pygame.mixer.Sound("../resources/audio/silence.ogg")
         #if we are muted then set the explosion sound to silence
-        player.landed_sound = pygame.mixer.Sound("../resources/silence.ogg")
+        player.landed_sound = pygame.mixer.Sound("../resources/audio/silence.ogg")
         #if we are muted then set the landed sound to silence
 
     while in_level:
@@ -214,7 +214,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #wipe anything from the screen
             player.update(planet)
             #update the center of the player based on the update function defined in the craft definition at the top
-            functions.player_planet_motion(player, planet, screen, resolution)
+            functions.player_planet_motion(player, planet, screen)
             #determine player/background interactions for final position
 
             drag_txt_x = font_small.render("Horizontal Drag: "+str(round(player.drag_x)), True, WHITE)
@@ -264,7 +264,7 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                 #check to see if the player has collide with the planet
                 player.burn_sound.stop()
                 #if it has then stop the engine burning sound
-                player, safe_landing_check, playing = functions.surface_collision(screen, resolution, player, difficulty, planet)
+                player, safe_landing_check, playing = functions.surface_collision(screen, player, difficulty, planet)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
 
             sprite_list.draw(screen)
@@ -276,20 +276,20 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
             #gets the current framerate of the game
             frame_rate_txt = font_small.render("FPS: "+str(round(frame_rate, 1)), True, WHITE)
             #generates text to render that frame rate
-            screen.blit(frame_rate_txt, functions.resource("frame_rate_txt", resolution))
+            screen.blit(frame_rate_txt, (10, 90))
             #prints that text on the screen in an appropriate place for the chosen resolution
 
-            screen.blit(x_vel_txt, functions.resource("x_vel_txt", resolution))
+            screen.blit(x_vel_txt, (10, 10))
             #display the horizontal velocity text on the screen (in a place appropraite for the resolution)
-            screen.blit(y_vel_txt, functions.resource("y_vel_txt", resolution))
+            screen.blit(y_vel_txt, (10, 30))
             #display the vertical velocity text on the screen (in a place appropraite for the resolution)
-            screen.blit(fuel_txt, functions.resource("fuel_txt", resolution))
+            screen.blit(fuel_txt, (10, 50))
             #display the fuel level on the screen (in a place appropraite for the resolution)
-            screen.blit(planet_tag, functions.resource("planet_tag", resolution))
+            screen.blit(planet_tag, (10, 70))
             #display the planet name on the screen (in a place appropraite for the resolution)
-            screen.blit(drag_txt_x, functions.resource("drag_txt_x", resolution))
+            screen.blit(drag_txt_x, (10, 110))
 			#display the horizontal drag text on the screen
-            screen.blit(drag_txt_y, functions.resource("drag_txt_y", resolution))
+            screen.blit(drag_txt_y, (10, 130))
 			#display the horizontal drag text on the screen
 
             pygame.display.flip()
@@ -305,9 +305,9 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                 #check for the pushing down of a key
                 if event.key == pygame.K_a:
                     #check for the a key being pressed, which replays the level
-                    player.c_position = functions.resource("init_position", resolution)
+                    player.c_position = (640, 360)
                     #reset the player position
-                    player.velocities = functions.resource("init_velocity", resolution)
+                    player.velocities = (6, 6)
                     #reset the player velocity
                     player.angle = 0
                     #reset the player tilt
@@ -321,9 +321,9 @@ def play(screen, clock, difficulty, muted, resource_location, resolution):
                     #get back into the playing loop
                 if event.key == pygame.K_SPACE:
                     #check for the space key being pressed
-                    player.c_position = functions.resource("init_position", resolution)
+                    player.c_position = (640, 360)
                     #reset the player position
-                    player.velocities = functions.resource("init_velocity", resolution)
+                    player.velocities = (6, 6)
                     #reset the player velocity
                     player.angle = 0
                     #reset the player angle
