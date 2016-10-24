@@ -19,9 +19,9 @@ def get_resolution():
         #runs if the file exists
         file = open("../resources/.settings.txt", "r")
         contents = file.read()
-        """if contents == "1920x1080":
-            resolution = [1920, 1080]"""#SHOULD BE INNECESSARY - TO BE DELETED
-        if contents == "1280x720":
+        if contents == "1920x1080":
+            resolution = [1920, 1080]
+        elif contents == "1280x720":
             resolution = [1280, 720]
         file.close()
     except:
@@ -32,7 +32,7 @@ def get_resolution():
         resolution = [1280, 720]
     return resolution
 
-"""def toggle_resolution():
+def toggle_resolution():
     if get_resolution() == [1920, 1080]:
         writ = "1280x720"
         resolution = [1280, 720]
@@ -42,7 +42,7 @@ def get_resolution():
     file = open("../resources/.settings.txt", "w")
     file.write(writ)
     file.close()
-    return resolution, "../resources/"+writ+"/" """ #SHOULD BE INNECESSARY
+    return resolution, "../resources/"+writ+"/"
 
 def safe_landing(player, difficulty):
     if math.fabs(player.velocities[0]) <= difficulty and math.fabs(player.velocities[1]) <= difficulty:
@@ -143,7 +143,7 @@ def object_collision(screen, resolution, player, difficulty):
     return player, safe_landing_check, playing
 
 def resource(thing, res):
-    """high_res = {
+    high_res = {
     "location" : "../resources/1920x1080/",
     "large_font" : 150,
     "med_font" : 50,
@@ -174,7 +174,7 @@ def resource(thing, res):
     "drag_txt_x" : [15, 135],
 	"drag_txt_y" : [15,165],
     "wind_warning" : [15, 195],
-    }"""#TO BE DELETED
+    }
 
     low_res = {
     "location" : "../resources/1280x720/",
@@ -207,13 +207,12 @@ def resource(thing, res):
 	"drag_txt_x" : [10, 110],
 	"drag_txt_y" : [10,130],
     "wind_warning" : [10, 150],
-	"wind_speed" : [10,170],
     }
 
     if res == [1280, 720]:
         ret = low_res[thing]
-    """elif res == [1920, 1080]:
-        ret = high_res[thing]""" #TO BE DELETED
+    elif res == [1920, 1080]:
+        ret = high_res[thing]
     return ret
 
 def drag(density, velocity, dragCoeff, Area):
@@ -229,47 +228,6 @@ def drag(density, velocity, dragCoeff, Area):
 	else:
 		F=0
 	return F
-	
-def wind_start(wind, screen, level_counter, resolution):
-    if level_counter < 72:
-        #start the wind noise twice (because sometimes it fails to work for no reason)
-        wind.noise.play()
-        #play the noise
-        wind.velocity_k = random.random()*20
-		#gives the wind an initial value
-    font_small = pygame.font.SysFont('Courier New', resource("small_font", resolution), True, False)
-    #define the font used for the warning text
-    wind_warning = font_small.render("WARNNIG: HIGH WINDS DETECTED!", True, RED)
-    #render the warning text
-	
-    if (round(level_counter, -1)/10.0) % 2 == 0:
-        #every 10 ticks
-        screen.blit(wind_warning, resource("wind_warning", resolution))
-    	
-    if (round(level_counter, -1)/20.0) % 2 == 0:
-        #every 20 ticks
-        if abs(wind.velocity_k)<=50:
-            wind.velocity_k += random.randint(0,20)-10
-        elif wind.velocity_k>50:
-            wind.velocity_k += (random.randint(0,20)-20)
-        elif wind.velocity_k+50<0:
-            wind.velocity_k += (random.randint(0,20))
-        #generate random wind and stops it from getting too large
-		
-    #flash the warning text
-    wind_x = (level_counter-72)*4
-    #work out wind_x from the level counter, where the last digit is the approximate velocity in arbritray units
-    wind_y = 300
-    #the height of the clouds (makes no impact to the physics)
-    wind.rect.midright = (wind_x, wind_y)
-    #tells the clouds where to spawn in
-    return True
-
-def wind_stop(wind):
-    wind.noise.stop()
-    #turn off wind noise
-    return False
-    #return variable saying wind noise is off (so we don't try and turn it off twice)
 
 def fix_music(music_state):
     if music_state == True:
