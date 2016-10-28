@@ -111,79 +111,6 @@ def object_collision(screen, player, difficulty):
 
     return player, safe_landing_check, playing
 
-def resource(thing, res):
-    high_res = {
-    "location" : "../resources/1920x1080/",
-    "large_font" : 150,
-    "med_font" : 50,
-    "small_font" : 30,
-    "audio_icon" : [10, 10],
-    "music_icon" : [10, 70],
-    "res_icon" : [660, 10],
-    "title" : [675, 175],
-    "subtitle" : [530, 325],
-    "effects" : [90, 25],
-    "music" : [90, 85],
-    "display" : [750, 25],
-    "exit" : [1700, 25],
-    "play" : [620, 675],
-    "success" : [630, 150],
-    "crash" : [500, 150],
-    "angle" : [425, 150],
-    "instruct" : [590, 250],
-    "exit_text" : [660, 325],
-    "next_level" : [450, 550],
-    "init_velocity" : [9, 9],
-    "init_position" : [105, 75],
-    "x_vel_txt" : [15, 15],
-    "y_vel_txt" : [15, 45],
-    "fuel_txt" : [15, 75],
-    "planet_tag" : [15, 105],
-    "frame_rate_txt" : [15, 105],
-    "drag_txt_x" : [15, 135],
-	"drag_txt_y" : [15,165],
-    "wind_warning" : [15, 195],
-    }
-
-    low_res = {
-    "location" : "../resources/1280x720/",
-    "large_font" : 100,
-    "med_font" : 33,
-    "small_font" : 20,
-    "audio_icon" : [7, 7],
-    "music_icon" : [7, 47],
-    "res_icon" : [440, 7],
-    "title" : [450, 117],
-    "subtitle" : [353, 217],
-    "effects" : [60, 17],
-    "music" : [60, 57],
-    "display" : [500, 17],
-    "exit" : [1133, 17],
-    "play" : [413, 450],
-    "success" : [420, 100],
-    "crash" : [333, 100],
-    "angle" : [283, 100],
-    "instruct" : [403, 167],
-    "exit_text" : [447, 217],
-    "next_level" : [303, 367],
-    "init_velocity" : [6, 6],
-    "init_position" : (int(res[0]/2), int(res[1]/2)),
-    "x_vel_txt" : [10, 10],
-    "y_vel_txt" : [10, 30],
-    "fuel_txt" : [10, 50],
-    "planet_tag" : [10, 70],
-    "frame_rate_txt" : [10, 90],
-	"drag_txt_x" : [10, 110],
-	"drag_txt_y" : [10,130],
-    "wind_warning" : [10, 150],
-    }
-
-    if res == [1280, 720]:
-        ret = low_res[thing]
-    elif res == [1920, 1080]:
-        ret = high_res[thing]
-    return ret
-
 def drag(density, velocity, dragCoeff, Area):
 	# F = force due to drag
 	p = density
@@ -243,3 +170,20 @@ def player_planet_motion(player, planet, screen):
     elif player.rect.center[0] > 1280:
         player.rect.center = (player.rect.center[0]-1280, player.rect.center[1])
         player.c_position = player.rect.center
+
+def be_windy(screen, player, planet):
+    wind_speed = random.random()*0.3
+    player.wind_location = (player.wind_location[0]+(wind_speed*10), player.wind_location[1])
+    player.velocities = (player.velocities[0]+wind_speed, player.velocities[1])
+    font_small = pygame.font.SysFont('Courier New', 20, True, False)
+    wind_warning = font_small.render("WARNNIG: HIGH WINDS DETECTED!", True, RED)
+    if (round(player.wind_timer, -1)/10.0) % 2 == 0:
+        screen.blit(wind_warning, (10, 150))
+    if player.altitude < 0:
+        screen.blit(player.wind_image, player.wind_location)
+    elif player.altitude <= 720*3:
+        player.wind_location = (player.wind_location[0], player.wind_location[1]+player.altitude)
+        screen.blit(player.wind_image, player.wind_location)
+    else:
+        screen.blit(player.wind_image, player.wind_location)
+    pass

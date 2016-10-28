@@ -59,12 +59,6 @@ def play(screen, clock, difficulty, muted):
             #effective altitude of player above planet surface for determining player/background interactions
             self.last_altitude = 0
             #variable for saving the previous altitude
-            self.wind_image = pygame.image.load("../resources/images/dust.png").convert_alpha()
-            #the image used for dust storms
-            self.wind_location = (-self.wind_image.get_width(), -self.wind_image.get_height())
-            #where the wind starts
-            self.wind_timer = 0
-            #sets a timer for wind
 
         def update(self, planet):
             """ this is a function which is updated each frame to calculate where the player should next appear given their position, velocity, thrust, and the current gravity """
@@ -113,13 +107,13 @@ def play(screen, clock, difficulty, muted):
         def __init__(self):
             super(Planet, self).__init__()
 
-            self.name = "Mars"
+            self.name = "HD 180733 b"
             #the name to be displayed in the top left info section
-            self.image = pygame.image.load("../resources/images/mars_surface.png").convert_alpha()
+            self.image = pygame.image.load("../resources/images/HD_surface.png").convert_alpha()
             #the image used for the planet surface
-            self.bg_image = pygame.image.load("../resources/images/mars_long.png").convert_alpha()
+            self.bg_image = pygame.image.load("../resources/images/HD_long.png").convert_alpha()
             #the image used as a background for the planet (including planet surface)
-            self.map = pygame.image.load("../resources/images/mars_map.png").convert_alpha()
+            self.map = pygame.image.load("../resources/images/HD_map.png").convert_alpha()
             #map image
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
@@ -222,10 +216,6 @@ def play(screen, clock, difficulty, muted):
             #update the center of the player based on the update function defined in the craft definition at the top
             functions.player_planet_motion(player, planet, screen)
             #determine player/background interactions for final position
-            player.wind_timer += 1
-            if player.wind_timer >= 90:
-                functions.be_windy(screen, player, planet)
-                #get the wind going after a certain point
 
             drag_txt_x = font_small.render("Horizontal Drag: "+str(round(player.drag_x)), True, WHITE)
 			#creates the text that says what horizontal drag is
@@ -304,10 +294,6 @@ def play(screen, clock, difficulty, muted):
 
             pygame.display.flip()
             #show the screen to the user
-
-        player.wind_location = (-player.wind_image.get_width(), -player.wind_image.get_height())
-        player.wind_timer = 0
-        #a timer that we use to trigger wind
 
         for event in pygame.event.get():
             #if we're no longer playing i.e. on a crash or success screen check for events
