@@ -10,7 +10,7 @@ import sys
 #we use sys for reading/editing a hidden settings file for saving preferences
 import pygame
 #pygame gives us easy graphics toys
-import level1, level2, level3, level4, level5, level6
+import level1, level2, level3, level4, level5, level6, level7
 #I've split the levels off into different scripts for ease of adding/changing them
 import video1
 
@@ -180,7 +180,9 @@ while not done:
                                     if next_level == True:
                                         next_level = level6.play(screen, clock, difficulty, audio_state)
                                         if next_level == True:
-                                            pass #do nothing (remove when levels are added)
+                                            next_level = level7.play(screen, clock, difficulty, audio_state)
+                                            if next_level == True:
+                                                pass #do nothing (remove when levels are added)
 
     if audio_state == True:
         #checks to see if the current audio state is on
