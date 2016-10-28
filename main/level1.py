@@ -29,6 +29,8 @@ def play(screen, clock, difficulty, muted):
 
             self.image = pygame.image.load("../resources/images/player_l.png").convert_alpha()
             #takes an image from the resources folder appropriate to the resolution to be used as the player
+            self.image_mini = pygame.image.load("../resources/images/player_mini.png").convert_alpha()
+            #an image used for the little player on the minimap
             self.rect = self.image.get_rect()
             #gets pygame to automatically work out the boundaries of the player
             self.mask = pygame.mask.from_surface(self.image)
@@ -99,8 +101,6 @@ def play(screen, clock, difficulty, muted):
                 #subtracts the amount of fuel previously set from the amount of fuel left
                 self.image = pygame.image.load("../resources/images/player_ld.png").convert_alpha()
                 #ensures that the image of the player has flames coming out of the bottom
-            self.image = pygame.transform.rotate(self.image, -1*player.angle)
-            #rotates the image of the player by its current angle
 
     class Planet(pygame.sprite.Sprite):
         """Object class for planet"""

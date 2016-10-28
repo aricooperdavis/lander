@@ -140,6 +140,7 @@ def fix_music(music_state):
 
 def player_planet_motion(player, planet, screen):
     player.altitude += player.velocities[1]
+    player.image_mini = pygame.transform.rotate(player.image_mini, -1*player.angle)
 
     if player.altitude < 0:
         player.rect.center = (player.c_position[0]+int(round(player.velocities[0])), player.c_position[1]+int(round(player.velocities[1])))
@@ -148,6 +149,7 @@ def player_planet_motion(player, planet, screen):
         pygame.draw.rect(screen, WHITE, (1280-150, 18, 131, 291), 2)
         pygame.draw.rect(screen, ORANGE, (1280-150, 18, 131, 76), 2)
         player.c_position = player.rect.center
+        screen.blit(player.image_mini, (int(round(player.rect.center[0]*0.1, 0)+1280-150), int(round(player.rect.center[1]*0.1, 0)+18)))
     elif player.altitude <= 720*3:
         screen.blit(planet.bg_image, [0, 0], (0, player.altitude, 1280, 720))
         screen.blit(planet.map, (1280-148, 20))
@@ -156,6 +158,7 @@ def player_planet_motion(player, planet, screen):
         player.rect.center = (player.c_position[0]+int(round(player.velocities[0])), player.c_position[1])
         player.c_position = player.rect.center
         player.last_altitude = player.altitude
+        screen.blit(player.image_mini, (int(round(player.rect.center[0]*0.1, 0)+1280-150), int(round(player.rect.center[1]*0.1, 0)+18+player.altitude*0.1)))
     else:
         player.rect.center = (player.c_position[0]+int(round(player.velocities[0])), player.c_position[1]+int(round(player.velocities[1])))
         screen.blit(planet.bg_image, [0, 0], (0, player.last_altitude, 1280, 720))
@@ -163,6 +166,7 @@ def player_planet_motion(player, planet, screen):
         pygame.draw.rect(screen, WHITE, (1280-150, 18, 131, 291), 2)
         pygame.draw.rect(screen, ORANGE, (1280-150, int(player.last_altitude/10)+18, 131, 76), 2)
         player.c_position = player.rect.center
+        screen.blit(player.image_mini, (int(round(player.rect.center[0]*0.1, 0)+1280-150), int(round(player.rect.center[1]*0.1, 0)+18+player.last_altitude*0.1)))
 
     if player.rect.center[0] < 0:
         player.rect.center = (player.rect.center[0]+1280, player.rect.center[1])
@@ -170,6 +174,7 @@ def player_planet_motion(player, planet, screen):
     elif player.rect.center[0] > 1280:
         player.rect.center = (player.rect.center[0]-1280, player.rect.center[1])
         player.c_position = player.rect.center
+
 
 def be_windy(screen, player, planet):
     wind_speed = random.random()*0.3
@@ -186,4 +191,11 @@ def be_windy(screen, player, planet):
         screen.blit(player.wind_image, player.wind_location)
     else:
         screen.blit(player.wind_image, player.wind_location)
-    pass
+
+def electro_mag(screen, player, planet):
+    player.level_timer += 1
+    font_small = pygame.font.SysFont('Courier New', 20, True, False)
+    electro_warning = font_small.render("WARNNIG: ELECTRONIC SYSTEMS DISRUPTED!", True, RED)
+    print player.level_timer
+    if (round(player.level_timer, -1)/10.0) % 2 == 0:
+        screen.blit(electro_warning, (10, 150))
