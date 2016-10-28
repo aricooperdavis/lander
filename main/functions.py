@@ -140,7 +140,6 @@ def fix_music(music_state):
 
 def player_planet_motion(player, planet, screen):
     player.altitude += player.velocities[1]
-    player.image_mini = pygame.transform.rotate(player.image_mini, -1*player.angle)
 
     if player.altitude < 0:
         player.rect.center = (player.c_position[0]+int(round(player.velocities[0])), player.c_position[1]+int(round(player.velocities[1])))
@@ -196,6 +195,5 @@ def electro_mag(screen, player, planet):
     player.level_timer += 1
     font_small = pygame.font.SysFont('Courier New', 20, True, False)
     electro_warning = font_small.render("WARNNIG: ELECTRONIC SYSTEMS DISRUPTED!", True, RED)
-    print player.level_timer
     if (round(player.level_timer, -1)/10.0) % 2 == 0:
         screen.blit(electro_warning, (10, 150))
