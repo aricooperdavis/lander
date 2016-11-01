@@ -241,6 +241,7 @@ def play(screen, clock, difficulty, muted):
 			#creates the text that says what horizontal drag is
             drag_txt_y = font_small.render("Vertical Drag: "+str(round(player.drag_y)), True, WHITE)
 			#creates the text that says what Vertical drag is
+            data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, WHITE)
 
             planet_tag = font_small.render("Planet: "+str(planet.name), True, WHITE)
             #create the text that names the planet
@@ -312,6 +313,7 @@ def play(screen, clock, difficulty, muted):
 			#display the horizontal drag text on the screen
             screen.blit(drag_txt_y, (10, 130))
 			#display the horizontal drag text on the screen
+            screen.blit(data_collected, (10, 150))
 
             pygame.display.flip()
             #show the screen to the user

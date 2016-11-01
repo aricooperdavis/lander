@@ -325,9 +325,9 @@ def display_highscores(screen):
         highscores = [("Example", 50)]
         font = pygame.font.SysFont("Courier New", 40, True, False)
         small_font = pygame.font.SysFont("Courier New", 20, True, False)
-        pygame.draw.rect(screen, WHITE, (400, 100, 490, 500), 0)
-        title = font.render("Highscores", True, GREEN)
-        exit = small_font.render("Press [ESC] to exit.", True, RED)
+        pygame.draw.rect(screen, WHITE, (400, 100, 490, 500), 2)
+        title = font.render("Highscores", True, WHITE)
+        exit = small_font.render("Press [ESC] to exit.", True, WHITE)
         screen.blit(title, (520, 130))
         screen.blit(exit, (525, 540))
         try:
@@ -341,7 +341,7 @@ def display_highscores(screen):
             with open('.highscores.txt', 'w+') as f:
                 pickle.dump(highscores, f)
         for i in highscores:
-            text = small_font.render(i[0]+" - "+str(i[1]), True, ORANGE)
+            text = small_font.render(i[0]+" - "+str(i[1]), True, WHITE)
             hp = 635-int((text.get_rect().width)/2)
             screen.blit(text, (hp, 180+(number*30)))
             number += 1

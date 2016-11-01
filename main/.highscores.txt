@@ -1,10 +1,14 @@
 (lp0
-(S'sick highscore blud lol'
+(S'Anonymous'
 p1
-I579
+I687
 tp2
-a(S'Example'
+a(S'sick highscore blud lol'
 p3
-I50
+I579
 tp4
+a(S'Example'
+p5
+I50
+tp6
 a.
