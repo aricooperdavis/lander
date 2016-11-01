@@ -61,12 +61,7 @@ def play(screen, clock, difficulty, muted):
             #effective altitude of player above planet surface for determining player/background interactions
             self.last_altitude = 0
             #variable for saving the previous altitude
-            self.wind_image = pygame.image.load("../resources/images/dust.png").convert_alpha()
-            #the image used for dust storms
-            self.wind_location = (-self.wind_image.get_width(), -self.wind_image.get_height())
-            #where the wind starts
-            self.wind_timer = 0
-            #sets a timer for wind
+            self.level_timer = 0
 
         def update(self, planet):
             """ this is a function which is updated each frame to calculate where the player should next appear given their position, velocity, thrust, and the current gravity """
@@ -117,11 +112,11 @@ def play(screen, clock, difficulty, muted):
 
             self.name = "Mars"
             #the name to be displayed in the top left info section
-            self.image = pygame.image.load("../resources/images/mars_surface.png").convert_alpha()
+            self.image = pygame.image.load("../resources/images/mars_surface2.png").convert_alpha()
             #the image used for the planet surface
-            self.bg_image = pygame.image.load("../resources/images/mars_long.png").convert_alpha()
+            self.bg_image = pygame.image.load("../resources/images/mars_long2.png").convert_alpha()
             #the image used as a background for the planet (including planet surface)
-            self.map = pygame.image.load("../resources/images/mars_map.png").convert_alpha()
+            self.map = pygame.image.load("../resources/images/mars_map2.png").convert_alpha()
             #map image
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
@@ -129,20 +124,34 @@ def play(screen, clock, difficulty, muted):
             #works out the border of the surface for collision detection
             self.accel_g = 0.23
             #the acceleration due to gravity from the planet
-            self.rect.bottomleft = (0, 720)
-            #ensuring that the planet surface lines up with the bottom of the screen (which is resolution dependant unless we had huge images)
             self.thrust = 0.5
             #the thrust that the player can exert (don't ask me why I put this in this section...)
             self.airDensity = 1 #for now
 			#Defines the density of the planets atmosphere
 
+    class Object(pygame.sprite.Sprite):
+        """Object class for collision objects that are not the landing zone, since that's included in the planet definition"""
+        def __init__(self):
+            super(Object, self).__init__()
+
+            self.image = pygame.image.load("../resources/images/wind.png").convert_alpha()
+            self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image)
+            self.rect.topleft = (-1280, 0)
+            self.velocity = (3, 0)
+            self.wind_noise = pygame.mixer.Sound("../resources/audio/wind_noise.ogg")
+
     sprite_list = pygame.sprite.Group()
+    object_sprite_list = pygame.sprite.Group()
     #creates a list of sprites
     planet = Planet()
     #make a planet called planet
     player = Craft()
     #make a craft called player
-    sprite_list.add(player)
+    wind = Object()
+
+    sprite_list.add(player, planet)
+    object_sprite_list.add(wind)
     #add the player to a list of sprites
 
     font_small = pygame.font.SysFont('Courier New', 20, True, False)
@@ -171,6 +180,8 @@ def play(screen, clock, difficulty, muted):
 
     while in_level:
         #enables us to drop out of the level if we choose to
+        player.level_timer = 0
+        wind.wind_noise.play()
         while playing:
             #if the game is running
             for event in pygame.event.get():
@@ -222,12 +233,9 @@ def play(screen, clock, difficulty, muted):
             #wipe anything from the screen
             player.update(planet)
             #update the center of the player based on the update function defined in the craft definition at the top
-            functions.player_planet_motion(player, planet, screen)
+            functions.player_planet_motion(player, planet, screen, object_sprite_list)
+            functions.wind_warning(screen, player, planet)
             #determine player/background interactions for final position
-            player.wind_timer += 1
-            if player.wind_timer >= 90:
-                functions.be_windy(screen, player, planet)
-                #get the wind going after a certain point
 
             drag_txt_x = font_small.render("Horizontal Drag: "+str(round(player.drag_x)), True, WHITE)
 			#creates the text that says what horizontal drag is
@@ -306,11 +314,7 @@ def play(screen, clock, difficulty, muted):
 
             pygame.display.flip()
             #show the screen to the user
-
-        player.wind_location = (-player.wind_image.get_width(), -player.wind_image.get_height())
-        player.wind_timer = 0
-        #a timer that we use to trigger wind
-
+        wind.wind_noise.stop()
         for event in pygame.event.get():
             #if we're no longer playing i.e. on a crash or success screen check for events
             if event.type == pygame.QUIT:
@@ -345,8 +349,6 @@ def play(screen, clock, difficulty, muted):
                     #reset the player angle
                     player.angular_thrust = 0
                     #reset the player thrust
-                    player.fuel = 100
-                    #reset the player fuel
                     player.altitude = 0
                     #resets the player altitude
                     if safe_landing_check == True:
@@ -356,6 +358,8 @@ def play(screen, clock, difficulty, muted):
                         in_level = False
                         #and break out of this level
                     elif safe_landing_check == False:
+                        player.fuel = 100
+                        #resets player fuel
                         playing = True
                         #if the landing wasn't safe replay the current level
                 if event.key == pygame.K_ESCAPE:
@@ -365,6 +369,6 @@ def play(screen, clock, difficulty, muted):
 
 #this bit returns true or false depending on whether you've chosen to go to the next level or not, for processing by launcher.py
     if next_level == False:
-        return False
+        return False, player.fuel
     elif next_level == True:
-        return True
+        return True, player.fuel

@@ -66,6 +66,8 @@ music_text = small_font.render("Toggle Music [M]", True, WHITE)
 #renders the text that gives the player the option to mute music
 exit_text = small_font.render("Exit [ESC]", True, WHITE)
 #renders the text that tells the player how to exit
+highscore_text = small_font.render("Highscores [H]", True, WHITE)
+#renders the hihgscore text
 play_text = medium_font.render("Press [SPACE] to Start", True, WHITE)
 #renders the text that tells the player how to start playing
 
@@ -121,6 +123,8 @@ music_state = True
 
 done = False
 while not done:
+    high_score = 0
+    level_score = 0
     #enables quitting of the game using esc
     for event in pygame.event.get():
         #checks for events (e.g. clicking things, pressing keys)
@@ -158,6 +162,8 @@ while not done:
                     #changes the audio state variable
                     pygame.mixer.music.unpause()
                     #unpauses the music
+            elif event.key == pygame.K_h:
+                functions.display_highscores(screen)
             elif event.key == pygame.K_SPACE:
                 #checks to see if the space key was pressed
                 next_level = video1.play(screen, clock)
@@ -168,21 +174,28 @@ while not done:
                 #play will return true when the level has been beaten and the player has chosen to progress, or false if exiting out to the main menu
                 if next_level == True:
                     #if it is completed successfully then run the next level (uncomment when built)
-                    next_level = level1.play(screen, clock, difficulty, audio_state)
+                    next_level, level_score = level1.play(screen, clock, difficulty, audio_state)
+                    high_score += level_score
                     if next_level == True:
-                        next_level = level2.play(screen, clock, difficulty, audio_state)
+                        next_level, level_score = level2.play(screen, clock, difficulty, audio_state)
+                        high_score += level_score
                         if next_level == True:
-                            next_level = level3.play(screen, clock, difficulty, audio_state)
+                            next_level, level_score = level3.play(screen, clock, difficulty, audio_state)
+                            high_score += level_score
                             if next_level == True:
-                                next_level = level4.play(screen, clock, difficulty, audio_state)
+                                next_level, level_score = level4.play(screen, clock, difficulty, audio_state)
+                                high_score += level_score
                                 if next_level == True:
-                                    next_level = level5.play(screen, clock, difficulty, audio_state)
+                                    next_level, level_score = level5.play(screen, clock, difficulty, audio_state)
+                                    high_score += level_score
                                     if next_level == True:
-                                        next_level = level6.play(screen, clock, difficulty, audio_state)
+                                        next_level, level_score = level6.play(screen, clock, difficulty, audio_state)
+                                        high_score += level_score
                                         if next_level == True:
-                                            next_level = level7.play(screen, clock, difficulty, audio_state)
+                                            next_level, level_score = level7.play(screen, clock, difficulty, audio_state)
+                                            high_score += level_score
                                             if next_level == True:
-                                                pass #do nothing (remove when levels are added)
+                                                functions.register_highscore(screen, high_score)
 
     if audio_state == True:
         #checks to see if the current audio state is on
@@ -203,6 +216,7 @@ while not done:
     screen.blit(effects_text, [60, 17])
     screen.blit(music_text, [60, 57])
     screen.blit(exit_text, [1133, 17])
+    screen.blit(highscore_text, [1085, 47])
     screen.blit(play_text, [413, 450])
 
     clock.tick(30)

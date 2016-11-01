@@ -126,20 +126,33 @@ def play(screen, clock, difficulty, muted):
             #works out the border of the surface for collision detection
             self.accel_g = 0.23
             #the acceleration due to gravity from the planet
-            self.rect.bottomleft = (0, 720)
-            #ensuring that the planet surface lines up with the bottom of the screen (which is resolution dependant unless we had huge images)
             self.thrust = 0.5
             #the thrust that the player can exert (don't ask me why I put this in this section...)
             self.airDensity = 1 #for now
 			#Defines the density of the planets atmosphere
 
+    class Object(pygame.sprite.Sprite):
+        """Object class for collision objects that are not the landing zone, since that's included in the planet definition"""
+        def __init__(self):
+            super(Object, self).__init__()
+
+            self.image = pygame.image.load("../resources/images/io_lava.png").convert_alpha()
+            self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image)
+            self.rect.topleft = (0, 0)
+            self.velocity = (0, 0)
+
     sprite_list = pygame.sprite.Group()
+    object_sprite_list = pygame.sprite.Group()
     #creates a list of sprites
     planet = Planet()
     #make a planet called planet
     player = Craft()
     #make a craft called player
-    sprite_list.add(player)
+    lava = Object()
+
+    sprite_list.add(player, planet)
+    object_sprite_list.add(lava)
     #add the player to a list of sprites
 
     font_small = pygame.font.SysFont('Courier New', 20, True, False)
@@ -220,7 +233,7 @@ def play(screen, clock, difficulty, muted):
             #wipe anything from the screen
             player.update(planet)
             #update the center of the player based on the update function defined in the craft definition at the top
-            functions.player_planet_motion(player, planet, screen)
+            functions.player_planet_motion(player, planet, screen, object_sprite_list)
             #determine player/background interactions for final position
             functions.electro_mag(screen, player, planet)
 
@@ -239,6 +252,10 @@ def play(screen, clock, difficulty, muted):
                 #if it has then stop the engine burning sound
                 player, safe_landing_check, playing = functions.surface_collision(screen, player, difficulty, planet)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
+
+            if pygame.sprite.collide_mask(player, lava) != None:
+                player.burn_sound.stop()
+                player, safe_landing_check, playing = functions.object_collision(screen, player, 0)
 
             sprite_list.draw(screen)
             #display the player on the screen
@@ -302,8 +319,6 @@ def play(screen, clock, difficulty, muted):
                     #reset the player angle
                     player.angular_thrust = 0
                     #reset the player thrust
-                    player.fuel = 100
-                    #reset the player fuel
                     player.altitude = 0
                     #resets the player altitude
                     if safe_landing_check == True:
@@ -313,6 +328,8 @@ def play(screen, clock, difficulty, muted):
                         in_level = False
                         #and break out of this level
                     elif safe_landing_check == False:
+                        player.fuel = 100
+                        #resets player fuel
                         playing = True
                         #if the landing wasn't safe replay the current level
                 if event.key == pygame.K_ESCAPE:
@@ -322,6 +339,6 @@ def play(screen, clock, difficulty, muted):
 
 #this bit returns true or false depending on whether you've chosen to go to the next level or not, for processing by launcher.py
     if next_level == False:
-        return False
+        return False, player.fuel
     elif next_level == True:
-        return True
+        return True, player.fuel

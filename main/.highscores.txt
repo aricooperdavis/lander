@@ -1,0 +1,10 @@
+(lp0
+(S'sick highscore blud lol'
+p1
+I579
+tp2
+a(S'Example'
+p3
+I50
+tp4
+a.
