@@ -61,6 +61,7 @@ def play(screen, clock, difficulty, muted):
             #effective altitude of player above planet surface for determining player/background interactions
             self.last_altitude = 0
             #variable for saving the previous altitude
+            self.hovering_time = 0
 
         def update(self, planet):
             """ this is a function which is updated each frame to calculate where the player should next appear given their position, velocity, thrust, and the current gravity """
@@ -109,13 +110,13 @@ def play(screen, clock, difficulty, muted):
         def __init__(self):
             super(Planet, self).__init__()
 
-            self.name = "Proxima B"
+            self.name = "HD 180733 b"
             #the name to be displayed in the top left info section
-            self.image = pygame.image.load("../resources/images/proxima_surface.png").convert_alpha()
+            self.image = pygame.image.load("../resources/images/HD_surface.png").convert_alpha()
             #the image used for the planet surface
-            self.bg_image = pygame.image.load("../resources/images/proxima_long.png").convert_alpha()
+            self.bg_image = pygame.image.load("../resources/images/HD_long.png").convert_alpha()
             #the image used as a background for the planet (including planet surface)
-            self.map = pygame.image.load("../resources/images/proxima_map.png").convert_alpha()
+            self.map = pygame.image.load("../resources/images/HD_map.png").convert_alpha()
             #map image
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
@@ -133,11 +134,11 @@ def play(screen, clock, difficulty, muted):
         def __init__(self):
             super(Object, self).__init__()
 
-            self.image = pygame.image.load("../resources/images/proxima_glacier.png").convert_alpha()
+            self.image = pygame.image.load("../resources/images/HD_clouds.png").convert_alpha()
             self.rect = self.image.get_rect()
             self.mask = pygame.mask.from_surface(self.image)
-            self.rect.topleft = (0, 0)
-            self.velocity = (0, 0)
+            self.rect.topleft = (-1280, 0)
+            self.velocity = (3, 0)
 
     sprite_list = pygame.sprite.Group()
     object_sprite_list = pygame.sprite.Group()
@@ -146,10 +147,14 @@ def play(screen, clock, difficulty, muted):
     #make a planet called planet
     player = Craft()
     #make a craft called player
-    ice = Object()
+    clouds = Object()
+    rain = Object()
+    rain.image = pygame.image.load("../resources/images/HD_rain.png").convert_alpha()
+    rain.rect = rain.image.get_rect()
+    rain.mask = pygame.mask.from_surface(rain.image)
 
     sprite_list.add(player, planet)
-    object_sprite_list.add(ice)
+    object_sprite_list.add(clouds, rain)
     #add the player to a list of sprites
 
     font_small = pygame.font.SysFont('Courier New', 20, True, False)
@@ -166,7 +171,6 @@ def play(screen, clock, difficulty, muted):
     #check to see if we've landed safely
     next_level = False
     #check to see if we're advancing to the next level this frame
-    score_multiplier = 2
 
     if not muted:
         #check to see if we're muted (i know this looks weird, but it makes sense in other contexts)
@@ -237,6 +241,7 @@ def play(screen, clock, difficulty, muted):
 			#creates the text that says what horizontal drag is
             drag_txt_y = font_small.render("Vertical Drag: "+str(round(player.drag_y)), True, WHITE)
 			#creates the text that says what Vertical drag is
+            data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, WHITE)
 
             planet_tag = font_small.render("Planet: "+str(planet.name), True, WHITE)
             #create the text that names the planet
@@ -278,14 +283,11 @@ def play(screen, clock, difficulty, muted):
 
             if pygame.sprite.collide_mask(player, planet) != None:
                 #check to see if the player has collide with the planet
-                player.burn_sound.stop()
-                #if it has then stop the engine burning sound
-                player, safe_landing_check, playing = functions.surface_collision(screen, player, difficulty, planet)
+                player, safe_landing_check, playing = functions.surface_hover(screen, player, difficulty, planet)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
 
-            if pygame.sprite.collide_mask(player, ice) != None:
-                player.burn_sound.stop()
-                player, safe_landing_check, playing = functions.object_collision(screen, player, 0)
+            if player.rect.center[1]>740:
+                player, safe_landing_check, playing = functions.surface_hover(screen, player, difficulty, planet, burn_up=True)
 
             sprite_list.draw(screen)
             #display the player on the screen
@@ -311,6 +313,7 @@ def play(screen, clock, difficulty, muted):
 			#display the horizontal drag text on the screen
             screen.blit(drag_txt_y, (10, 130))
 			#display the horizontal drag text on the screen
+            screen.blit(data_collected, (10, 150))
 
             pygame.display.flip()
             #show the screen to the user
@@ -324,7 +327,6 @@ def play(screen, clock, difficulty, muted):
             elif event.type == pygame.KEYDOWN:
                 #check for the pushing down of a key
                 if event.key == pygame.K_a:
-                    score_multiplier = score_multiplier * 0.7
                     #check for the a key being pressed, which replays the level
                     player.c_position = (640, 360)
                     #reset the player position
@@ -361,7 +363,6 @@ def play(screen, clock, difficulty, muted):
                     elif safe_landing_check == False:
                         player.fuel = 100
                         #resets player fuel
-                        score_multiplier = score_multiplier * 0.7
                         playing = True
                         #if the landing wasn't safe replay the current level
                 if event.key == pygame.K_ESCAPE:
@@ -371,6 +372,6 @@ def play(screen, clock, difficulty, muted):
 
 #this bit returns true or false depending on whether you've chosen to go to the next level or not, for processing by launcher.py
     if next_level == False:
-        return False, player.fuel*score_multiplier
+        return False, player.fuel
     elif next_level == True:
-        return True, player.fuel*score_multiplier
+        return True, player.fuel

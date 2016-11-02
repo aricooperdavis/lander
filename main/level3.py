@@ -168,6 +168,7 @@ def play(screen, clock, difficulty, muted):
     #check to see if we've landed safely
     next_level = False
     #check to see if we're advancing to the next level this frame
+    score_multiplier = 2
 
     if not muted:
         #check to see if we're muted (i know this looks weird, but it makes sense in other contexts)
@@ -324,6 +325,7 @@ def play(screen, clock, difficulty, muted):
             elif event.type == pygame.KEYDOWN:
                 #check for the pushing down of a key
                 if event.key == pygame.K_a:
+                    score_multiplier = score_multiplier * 0.7
                     #check for the a key being pressed, which replays the level
                     player.c_position = (640, 360)
                     #reset the player position
@@ -360,6 +362,7 @@ def play(screen, clock, difficulty, muted):
                     elif safe_landing_check == False:
                         player.fuel = 100
                         #resets player fuel
+                        score_multiplier = score_multiplier * 0.7
                         playing = True
                         #if the landing wasn't safe replay the current level
                 if event.key == pygame.K_ESCAPE:
@@ -369,6 +372,6 @@ def play(screen, clock, difficulty, muted):
 
 #this bit returns true or false depending on whether you've chosen to go to the next level or not, for processing by launcher.py
     if next_level == False:
-        return False, player.fuel
+        return False, player.fuel*score_multiplier
     elif next_level == True:
-        return True, player.fuel
+        return True, player.fuel*score_multiplier

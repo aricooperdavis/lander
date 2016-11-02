@@ -35,7 +35,7 @@ screen = pygame.display.set_mode((1280,720))
 #sets the screen size to that defined by the resolution that is in the hidden settings file
 pygame.display.set_caption("Lander")
 #sets the title of the window to "Lander"
-background_image = pygame.image.load("../resources/images/launcher.jpg")
+background_image = pygame.image.load("../resources/images/launcher.png")
 #loads up a splash-screen background image from the relevant resolution resources folder
 screen.fill(BLACK)
 #clears the screen

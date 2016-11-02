@@ -1,14 +1,6 @@
 (lp0
-(S'Anonymous'
+(S'Example'
 p1
-I687
-tp2
-a(S'sick highscore blud lol'
-p3
-I579
-tp4
-a(S'Example'
-p5
 I50
-tp6
+tp2
 a.

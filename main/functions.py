@@ -265,20 +265,21 @@ def get_key():
 def display_box(score, screen, message):
     font = pygame.font.SysFont("Courier New", 40, True, False)
     small_font = pygame.font.SysFont("Courier New", 20, True, False)
-    pygame.draw.rect(screen, WHITE, (380, 180, 530, 300), 0)
-    pygame.draw.rect(screen, BLACK, (450, 340, 380, 30), 1)
-    title = font.render("New Highscore!", True, GREEN)
-    subtitle = small_font.render("Enter your name below:", True, BLACK)
-    scorecard = small_font.render("Your score: "+str(score), True, ORANGE)
-    submit = small_font.render("Press [ENTER] to submit your name", True, GREEN)
-    anonymous = small_font.render("or press [ESC] to submit anonymously.", True, RED)
+    screen.blit(pygame.image.load("../resources/images/highscore_register.png"), (0, 0))
+    pygame.draw.rect(screen, WHITE, (380, 180, 530, 300), 2)
+    pygame.draw.rect(screen, WHITE, (450, 340, 380, 30), 1)
+    title = font.render("New Highscore!", True, WHITE)
+    subtitle = small_font.render("Enter your name below:", True, WHITE)
+    scorecard = small_font.render("Your score: "+str(score), True, WHITE)
+    submit = small_font.render("Press [ENTER] to submit your name", True, WHITE)
+    anonymous = small_font.render("or press [ESC] to submit anonymously.", True, WHITE)
     screen.blit(title, (475, 200))
     screen.blit(scorecard, (545, 250))
     screen.blit(subtitle, (500, 300))
     screen.blit(submit, (442, 400))
     screen.blit(anonymous, (430, 430))
     if len(message) != 0:
-        screen.blit(small_font.render(message, True, BLACK), (455, 343))
+        screen.blit(small_font.render(message, True, WHITE), (455, 343))
     pygame.display.flip()
 
 def write_highscore_to_file(name, score):
@@ -323,13 +324,16 @@ def display_highscores(screen):
     while 1:
         number = 0
         highscores = [("Example", 50)]
+        screen.blit(pygame.image.load("../resources/images/highscore_display.png"), (0, 0))
         font = pygame.font.SysFont("Courier New", 40, True, False)
         small_font = pygame.font.SysFont("Courier New", 20, True, False)
         pygame.draw.rect(screen, WHITE, (400, 100, 490, 500), 2)
         title = font.render("Highscores", True, WHITE)
         exit = small_font.render("Press [ESC] to exit.", True, WHITE)
+        reset = small_font.render("Press [R] to reset highscores.", True, WHITE)
         screen.blit(title, (520, 130))
-        screen.blit(exit, (525, 540))
+        screen.blit(exit, (525, 550))
+        screen.blit(reset, (472, 520))
         try:
             with open('.highscores.txt', 'r') as f:
                 try:
@@ -341,13 +345,17 @@ def display_highscores(screen):
             with open('.highscores.txt', 'w+') as f:
                 pickle.dump(highscores, f)
         for i in highscores:
-            text = small_font.render(i[0]+" - "+str(i[1]), True, WHITE)
-            hp = 635-int((text.get_rect().width)/2)
-            screen.blit(text, (hp, 180+(number*30)))
+            text = small_font.render(i[0]+" - "+str(i[1]), True, YELLOW)
+            hp = 645-int((text.get_rect().width)/2)
+            screen.blit(text, (hp, 195+(number*30)))
             number += 1
         pygame.display.flip()
         inkey = get_key()
         if inkey == pygame.K_ESCAPE:
             break
+        elif inkey == pygame.K_r:
+            highscores = [("Example", 50)]
+            with open('.highscores.txt', 'w') as f:
+                pickle.dump(highscores, f)
         pass
     pass
