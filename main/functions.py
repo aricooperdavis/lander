@@ -35,7 +35,7 @@ def explosion(screen, player, planet):
 def surface_collision(screen, player, difficulty, planet):
     font = pygame.font.SysFont('Courier New', 33, True, False)
     success_text = font.render("Good Landing, Commander!", True, GREEN)
-    next_level_text = font.render("Press [SPACE] to try the next level.", True, GREEN)
+    next_level_text = font.render("Press [SPACE] to continue.", True, GREEN)
     crash_text = font.render("You came in too fast, Commander!", True, RED)
     angle_crash_text = font.render("You need to land vertically, Commander!", True, RED)
     instruct_text = font.render("Press [A] to play again.", True, WHITE)
@@ -47,7 +47,7 @@ def surface_collision(screen, player, difficulty, planet):
         screen.blit(success_text, (420, 100))
         screen.blit(instruct_text, (403, 167))
         screen.blit(exit_text, (447, 217))
-        screen.blit(next_level_text, (303, 367))
+        screen.blit(next_level_text, (403, 367))
         #And ensure craft stops moving and stays on surface
         accel_g, player.thrust, player.velocities = 0, 0, [0, 0]
         #Set safe landing check to True

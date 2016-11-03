@@ -121,7 +121,7 @@ def play(screen, clock, difficulty, muted):
             #calcultes the dimensions of the surface so that its location can be determined
             self.mask = pygame.mask.from_surface(self.image)
             #works out the border of the surface for collision detection
-            self.accel_g = 0.1
+            self.accel_g = 0.16
             #the acceleration due to gravity from the planet
             self.thrust = 0.5
             #the thrust that the player can exert (don't ask me why I put this in this section...)

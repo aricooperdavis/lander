@@ -124,11 +124,11 @@ def play(screen, clock, difficulty, muted):
             #calcultes the dimensions of the surface so that its location can be determined
             self.mask = pygame.mask.from_surface(self.image)
             #works out the border of the surface for collision detection
-            self.accel_g = 0.23
+            self.accel_g = 0.18
             #the acceleration due to gravity from the planet
-            self.thrust = 0.5
+            self.thrust = 0.7
             #the thrust that the player can exert (don't ask me why I put this in this section...)
-            self.airDensity = 1 #for now
+            self.airDensity = 0 #Trace Atmosphere
 			#Defines the density of the planets atmosphere
 
     class Object(pygame.sprite.Sprite):
