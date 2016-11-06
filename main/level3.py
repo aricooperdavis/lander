@@ -149,9 +149,19 @@ def play(screen, clock, difficulty, muted):
     player = Craft()
     #make a craft called player
     wind = Object()
+    target_zone = Object()
+    target_zone.image = pygame.image.load("../resources/images/mars_targetzone.png").convert_alpha()
+    target_zone.rect.topleft = (0, 0)
+    target_zone.velocity = (0, 0)
+    crash_zone = Object()
+    crash_zone.image = pygame.image.load("../resources/images/mars_crashzone.png").convert_alpha()
+    crash_zone.rect = crash_zone.image.get_rect()
+    crash_zone.mask = pygame.mask.from_surface(crash_zone.image, 10)
+    crash_zone.rect.topleft = (0, 0)
+    crash_zone.velocity = (0, 0)
 
     sprite_list.add(player, planet)
-    object_sprite_list.add(wind)
+    object_sprite_list.add(wind, target_zone, crash_zone)
     #add the player to a list of sprites
 
     font_small = pygame.font.SysFont('Courier New', 20, True, False)
@@ -287,6 +297,10 @@ def play(screen, clock, difficulty, muted):
                 #if it has then stop the engine burning sound
                 player, safe_landing_check, playing = functions.surface_collision(screen, player, difficulty, planet)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
+
+            if pygame.sprite.collide_mask(player, crash_zone) != None:
+                player.burn_sound.stop()
+                player, safe_landing_check, playing = functions.object_collision(screen, player, 0)
 
             sprite_list.draw(screen)
             #display the player on the screen
