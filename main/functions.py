@@ -35,7 +35,7 @@ def explosion(screen, player, planet):
 def surface_collision(screen, player, difficulty, planet):
     font = pygame.font.SysFont('Courier New', 33, True, False)
     success_text = font.render("Good Landing, Commander!", True, GREEN)
-    next_level_text = font.render("Press [SPACE] to continue.", True, GREEN)
+    next_level_text = font.render("Press [SPACE] to try the next level.", True, GREEN)
     crash_text = font.render("You came in too fast, Commander!", True, RED)
     angle_crash_text = font.render("You need to land vertically, Commander!", True, RED)
     instruct_text = font.render("Press [A] to play again.", True, WHITE)
@@ -44,10 +44,10 @@ def surface_collision(screen, player, difficulty, planet):
     if safe_landing(player, difficulty) == True:
         #If landing is safe display success messages
         player.landed_sound.play()
-        screen.blit(success_text, (420, 100))
+        screen.blit(success_text, (400, 100))
         screen.blit(instruct_text, (403, 167))
         screen.blit(exit_text, (447, 217))
-        screen.blit(next_level_text, (403, 367))
+        screen.blit(next_level_text, (303, 367))
         #And ensure craft stops moving and stays on surface
         accel_g, player.thrust, player.velocities = 0, 0, [0, 0]
         #Set safe landing check to True
@@ -83,7 +83,7 @@ def surface_collision(screen, player, difficulty, planet):
 def surface_hover(screen, player, difficulty, planet, burn_up=False):
     font = pygame.font.SysFont('Courier New', 33, True, False)
     success_text = font.render("Good Hovering, Commander!", True, GREEN)
-    next_level_text = font.render("Press [SPACE] to try the next level.", True, GREEN)
+    next_level_text = font.render("Press [SPACE] to continue.", True, GREEN)
     instruct_text = font.render("Press [A] to play again.", True, WHITE)
     exit_text = font.render("Press [ESC] to exit.", True, WHITE)
     crash_text = font.render("You burned up in the atmosphere, Commander!", True, RED)
@@ -93,10 +93,10 @@ def surface_hover(screen, player, difficulty, planet, burn_up=False):
             player.hovering_time = 0
             player.burn_sound.stop()
             player.landed_sound.play()
-            screen.blit(success_text, (420, 100))
+            screen.blit(success_text, (400, 100))
             screen.blit(instruct_text, (403, 167))
             screen.blit(exit_text, (447, 217))
-            screen.blit(next_level_text, (303, 367))
+            screen.blit(next_level_text, (403, 367))
             #And ensure craft stops moving and stays on surface
             accel_g, player.thrust, player.velocities = 0, 0, [0, 0]
             #Set safe landing check to True
@@ -359,3 +359,32 @@ def display_highscores(screen):
                 pickle.dump(highscores, f)
         pass
     pass
+
+def show_controls(screen):
+    while 1:
+        screen.blit(pygame.image.load("../resources/images/highscore_display.png"), (0, 0))
+        screen.blit(pygame.image.load("../resources/images/left.png"), (550, 200))
+        screen.blit(pygame.image.load("../resources/images/right.png"), (650, 200))
+        screen.blit(pygame.image.load("../resources/images/up.png"), (600, 360))
+        pygame.draw.rect(screen, WHITE, (400, 100, 490, 500), 2)
+        font = pygame.font.SysFont("Courier New", 40, True, False)
+        small_font = pygame.font.SysFont("Courier New", 20, True, False)
+        title = font.render("Controls", True, WHITE)
+        up = small_font.render("Fire the ships thrusters", True, WHITE)
+        left = small_font.render("Rotate the ship", True, WHITE)
+        cont = small_font.render("Press [SPACE] to continue", True, WHITE)
+        exit = small_font.render("Press [ESC] to exit", True, WHITE)
+        screen.blit(title, (555, 130))
+        screen.blit(exit, (535, 555))
+        screen.blit(up, (505, 460))
+        screen.blit(left, (555, 310))
+        screen.blit(cont, (500, 525))
+        pygame.display.flip()
+        inkey = get_key()
+        if inkey == pygame.K_ESCAPE:
+            playing = False
+            break
+        elif inkey == pygame.K_SPACE:
+            playing = True
+            break
+    return playing, 0

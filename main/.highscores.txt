@@ -1,14 +1,6 @@
 (lp0
-(S'lol top high score kek'
+(S'Example'
 p1
-I1200
-tp2
-a(S'ari'
-p3
-I920
-tp4
-a(S'Example'
-p5
 I50
-tp6
+tp2
 a.

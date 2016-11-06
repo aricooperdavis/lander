@@ -128,13 +128,28 @@ def play(screen, clock, difficulty, muted):
             self.airDensity = 0.01
 			#Defines the density of the planets atmosphere
 
+    class Object(pygame.sprite.Sprite):
+        """Object class for collision objects that are not the landing zone, since that's included in the planet definition"""
+        def __init__(self):
+            super(Object, self).__init__()
+
+            self.image = pygame.image.load("../resources/images/pathfinder.png").convert_alpha()
+            self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image)
+            self.rect.topleft = (0, 0)
+            self.velocity = (0, 0)
+
     sprite_list = pygame.sprite.Group()
+    object_sprite_list = pygame.sprite.Group()
     #creates a list of sprites
     planet = Planet()
     #make a planet called planet
     player = Craft()
     #make a craft called player
+    pathfinder = Object()
+
     sprite_list.add(player, planet)
+    object_sprite_list.add(pathfinder)
     #add the player to a list of sprites
 
     font_small = pygame.font.SysFont('Courier New', 20, True, False)
@@ -215,7 +230,7 @@ def play(screen, clock, difficulty, muted):
             #wipe anything from the screen
             player.update(planet)
             #update the center of the player based on the update function defined in the craft definition at the top
-            functions.player_planet_motion(player, planet, screen)
+            functions.player_planet_motion(player, planet, screen, object_sprite_list)
             #determine player/background interactions for final position
 
             drag_txt_x = font_small.render("Horizontal Drag: "+str(round(player.drag_x)), True, WHITE)
@@ -268,6 +283,10 @@ def play(screen, clock, difficulty, muted):
                 player, safe_landing_check, playing = functions.surface_collision(screen, player, difficulty, planet)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
 
+            if pygame.sprite.collide_mask(player, pathfinder) != None:
+                player.burn_sound.stop()
+                player, safe_landing_check, playing = functions.object_collision(screen, player, 0)
+
             sprite_list.draw(screen)
             #display the player on the screen
             clock.tick(30)
@@ -277,7 +296,7 @@ def play(screen, clock, difficulty, muted):
             #gets the current framerate of the game
             frame_rate_txt = font_small.render("FPS: "+str(round(frame_rate, 1)), True, WHITE)
             #generates text to render that frame rate
-            screen.blit(frame_rate_txt, (10, 90))
+            #screen.blit(frame_rate_txt, (10, 130))
             #prints that text on the screen in an appropriate place for the chosen resolution
 
             screen.blit(x_vel_txt, (10, 10))
@@ -288,9 +307,9 @@ def play(screen, clock, difficulty, muted):
             #display the fuel level on the screen (in a place appropraite for the resolution)
             screen.blit(planet_tag, (10, 70))
             #display the planet name on the screen (in a place appropraite for the resolution)
-            screen.blit(drag_txt_x, (10, 110))
+            screen.blit(drag_txt_x, (10, 90))
 			#display the horizontal drag text on the screen
-            screen.blit(drag_txt_y, (10, 130))
+            screen.blit(drag_txt_y, (10, 110))
 			#display the horizontal drag text on the screen
 
             pygame.display.flip()

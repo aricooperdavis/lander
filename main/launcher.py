@@ -173,29 +173,31 @@ while not done:
                 #note that the play function gets given the screen, clock, difficulty, audio_state, resource location, and resolution
                 #play will return true when the level has been beaten and the player has chosen to progress, or false if exiting out to the main menu
                 if next_level == True:
-                    #if it is completed successfully then run the next level (uncomment when built)
-                    next_level, level_score = level1.play(screen, clock, difficulty, audio_state)
+                    next_level, level_score = functions.show_controls(screen)
                     high_score += level_score
                     if next_level == True:
-                        next_level, level_score = level2.play(screen, clock, difficulty, audio_state)
+                        next_level, level_score = level1.play(screen, clock, difficulty, audio_state)
                         high_score += level_score
                         if next_level == True:
-                            next_level, level_score = level3.play(screen, clock, difficulty, audio_state)
+                            next_level, level_score = level2.play(screen, clock, difficulty, audio_state)
                             high_score += level_score
                             if next_level == True:
-                                next_level, level_score = level4.play(screen, clock, difficulty, audio_state)
+                                next_level, level_score = level3.play(screen, clock, difficulty, audio_state)
                                 high_score += level_score
                                 if next_level == True:
-                                    next_level, level_score = level5.play(screen, clock, difficulty, audio_state)
+                                    next_level, level_score = level4.play(screen, clock, difficulty, audio_state)
                                     high_score += level_score
                                     if next_level == True:
-                                        next_level, level_score = level6.play(screen, clock, difficulty, audio_state)
+                                        next_level, level_score = level5.play(screen, clock, difficulty, audio_state)
                                         high_score += level_score
                                         if next_level == True:
-                                            next_level, level_score = level7.play(screen, clock, difficulty, audio_state)
+                                            next_level, level_score = level6.play(screen, clock, difficulty, audio_state)
                                             high_score += level_score
                                             if next_level == True:
-                                                functions.register_highscore(screen, high_score)
+                                                next_level, level_score = level7.play(screen, clock, difficulty, audio_state)
+                                                high_score += level_score
+                                                if next_level == True:
+                                                    functions.register_highscore(screen, high_score)
 
     if audio_state == True:
         #checks to see if the current audio state is on

@@ -296,7 +296,7 @@ def play(screen, clock, difficulty, muted):
             #gets the current framerate of the game
             frame_rate_txt = font_small.render("FPS: "+str(round(frame_rate, 1)), True, WHITE)
             #generates text to render that frame rate
-            screen.blit(frame_rate_txt, (10, 90))
+            #screen.blit(frame_rate_txt, (10, 130))
             #prints that text on the screen in an appropriate place for the chosen resolution
 
             screen.blit(x_vel_txt, (10, 10))
@@ -307,9 +307,9 @@ def play(screen, clock, difficulty, muted):
             #display the fuel level on the screen (in a place appropraite for the resolution)
             screen.blit(planet_tag, (10, 70))
             #display the planet name on the screen (in a place appropraite for the resolution)
-            screen.blit(drag_txt_x, (10, 110))
+            screen.blit(drag_txt_x, (10, 90))
 			#display the horizontal drag text on the screen
-            screen.blit(drag_txt_y, (10, 130))
+            screen.blit(drag_txt_y, (10, 110))
 			#display the horizontal drag text on the screen
 
             pygame.display.flip()
