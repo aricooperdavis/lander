@@ -110,7 +110,7 @@ def play(screen, clock, difficulty, muted):
         def __init__(self):
             super(Planet, self).__init__()
 
-            self.name = "HD 180733 b"
+            self.name = "HD 189733 b"
             #the name to be displayed in the top left info section
             self.image = pygame.image.load("../resources/images/HD_surface.png").convert_alpha()
             #the image used for the planet surface
