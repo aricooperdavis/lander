@@ -27,9 +27,9 @@ def play(screen, clock, difficulty, muted):
         def __init__(self):
             super(Craft, self).__init__()
 
-            self.image = pygame.image.load("../resources/images/player_l.png").convert_alpha()
+            self.image = pygame.image.load("../resources/images/probe_ld.png").convert_alpha()
             #takes an image from the resources folder appropriate to the resolution to be used as the player
-            self.image_mini = pygame.image.load("../resources/images/player_mini.png").convert_alpha()
+            self.image_mini = pygame.image.load("../resources/images/probe_mini.png").convert_alpha()
             #an image used for the little player on the minimap
             self.rect = self.image.get_rect()
             #gets pygame to automatically work out the boundaries of the player
@@ -94,13 +94,13 @@ def play(screen, clock, difficulty, muted):
 
             if self.thrust == 0:
                 #checks to see if the player is not thrusting
-                self.image = pygame.image.load("../resources/images/player_l.png").convert_alpha()
+                self.image = pygame.image.load("../resources/images/probe_ld.png").convert_alpha()
                 #ensures that the image describing the player is does not have flames coming out the bottom
             elif self.thrust != 0:
                 #checks to see if the player is thrusting
                 self.fuel -= self.fuel_rate
                 #subtracts the amount of fuel previously set from the amount of fuel left
-                self.image = pygame.image.load("../resources/images/player_ld.png").convert_alpha()
+                self.image = pygame.image.load("../resources/images/probe_l.png").convert_alpha()
                 #ensures that the image of the player has flames coming out of the bottom
             self.image = pygame.transform.rotate(self.image, -1*player.angle)
             #rotates the image of the player by its current angle

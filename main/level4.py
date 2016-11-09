@@ -2,6 +2,8 @@ import functions
 #I've split functions off into a different script for ease of editing/adding new levels/resolutions etc
 import math
 #math gives us access to absolute magnitude functions
+import random
+#for broken instruments
 import pygame
 #pygame gives us easy graphics toys
 
@@ -27,7 +29,7 @@ def play(screen, clock, difficulty, muted):
         def __init__(self):
             super(Craft, self).__init__()
 
-            self.image = pygame.image.load("../resources/images/probe_ld.png").convert_alpha()
+            self.image = pygame.image.load("../resources/images/player_l.png").convert_alpha()
             #takes an image from the resources folder appropriate to the resolution to be used as the player
             self.image_mini = pygame.image.load("../resources/images/player_mini.png").convert_alpha()
             #an image used for the little player on the minimap
@@ -61,6 +63,7 @@ def play(screen, clock, difficulty, muted):
             #effective altitude of player above planet surface for determining player/background interactions
             self.last_altitude = 0
             #variable for saving the previous altitude
+            self.level_timer = 0
 
         def update(self, planet):
             """ this is a function which is updated each frame to calculate where the player should next appear given their position, velocity, thrust, and the current gravity """
@@ -93,13 +96,13 @@ def play(screen, clock, difficulty, muted):
 
             if self.thrust == 0:
                 #checks to see if the player is not thrusting
-                self.image = pygame.image.load("../resources/images/probe_ld.png").convert_alpha()
+                self.image = pygame.image.load("../resources/images/player_l.png").convert_alpha()
                 #ensures that the image describing the player is does not have flames coming out the bottom
             elif self.thrust != 0:
                 #checks to see if the player is thrusting
                 self.fuel -= self.fuel_rate
                 #subtracts the amount of fuel previously set from the amount of fuel left
-                self.image = pygame.image.load("../resources/images/probe_l.png").convert_alpha()
+                self.image = pygame.image.load("../resources/images/player_ld.png").convert_alpha()
                 #ensures that the image of the player has flames coming out of the bottom
             self.image = pygame.transform.rotate(self.image, -1*player.angle)
             #rotates the image of the player by its current angle
@@ -109,23 +112,23 @@ def play(screen, clock, difficulty, muted):
         def __init__(self):
             super(Planet, self).__init__()
 
-            self.name = "Titan"
+            self.name = "Io"
             #the name to be displayed in the top left info section
-            self.image = pygame.image.load("../resources/images/titan_surface.png").convert_alpha()
+            self.image = pygame.image.load("../resources/images/io_surface.png").convert_alpha()
             #the image used for the planet surface
-            self.bg_image = pygame.image.load("../resources/images/titan_long.png").convert_alpha()
+            self.bg_image = pygame.image.load("../resources/images/io_long.png").convert_alpha()
             #the image used as a background for the planet (including planet surface)
-            self.map = pygame.image.load("../resources/images/titan_map.png").convert_alpha()
+            self.map = pygame.image.load("../resources/images/io_map.png").convert_alpha()
             #map image
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
             self.mask = pygame.mask.from_surface(self.image)
             #works out the border of the surface for collision detection
-            self.accel_g = 0.14
+            self.accel_g = 0.18
             #the acceleration due to gravity from the planet
-            self.thrust = 0.2
+            self.thrust = 0.7
             #the thrust that the player can exert (don't ask me why I put this in this section...)
-            self.airDensity = 2.4
+            self.airDensity = 0 #Trace Atmosphere
 			#Defines the density of the planets atmosphere
 
     class Object(pygame.sprite.Sprite):
@@ -133,7 +136,7 @@ def play(screen, clock, difficulty, muted):
         def __init__(self):
             super(Object, self).__init__()
 
-            self.image = pygame.image.load("../resources/images/titan_land.png").convert_alpha()
+            self.image = pygame.image.load("../resources/images/io_lava.png").convert_alpha()
             self.rect = self.image.get_rect()
             self.mask = pygame.mask.from_surface(self.image)
             self.rect.topleft = (0, 0)
@@ -146,10 +149,10 @@ def play(screen, clock, difficulty, muted):
     #make a planet called planet
     player = Craft()
     #make a craft called player
-    land = Object()
+    lava = Object()
 
     sprite_list.add(player, planet)
-    object_sprite_list.add(land)
+    object_sprite_list.add(lava)
     #add the player to a list of sprites
 
     font_small = pygame.font.SysFont('Courier New', 20, True, False)
@@ -179,6 +182,7 @@ def play(screen, clock, difficulty, muted):
 
     while in_level:
         #enables us to drop out of the level if we choose to
+        player.level_timer = 0
         while playing:
             #if the game is running
             for event in pygame.event.get():
@@ -232,49 +236,16 @@ def play(screen, clock, difficulty, muted):
             #update the center of the player based on the update function defined in the craft definition at the top
             functions.player_planet_motion(player, planet, screen, object_sprite_list)
             #determine player/background interactions for final position
-
-            drag_txt_x = font_small.render("Horizontal Drag: "+str(round(player.drag_x)), True, WHITE)
-			#creates the text that says what horizontal drag is
-            drag_txt_y = font_small.render("Vertical Drag: "+str(round(player.drag_y)), True, WHITE)
-			#creates the text that says what Vertical drag is
+            functions.electro_mag(screen, player, planet)
 
             planet_tag = font_small.render("Planet: "+str(planet.name), True, WHITE)
             #create the text that names the planet
-            if math.fabs(player.velocities[0]) > difficulty:
-                #check to see if the horizontal velocity is above the difficulty level (of max landing velocity)
-                x_vel_txt = font_small.render("Horizontal velocity: "+str(round(player.velocities[0], 1)), True, RED)
-                #if it is then create the text that shows horizontal velocity in red
-            else:
-                x_vel_txt = font_small.render("Horizontal velocity: "+str(round(player.velocities[0], 1)), True, GREEN)
-                #if its not then create the text that shows the horizontal velocity in green
-            if math.fabs(player.velocities[1]) > difficulty:
-                #check to see if the vertical velocity is above the difficulty level (of max landing velocity)
-                y_vel_txt = font_small.render("Vertical velocity: "+str(round(player.velocities[1], 1)), True, RED)
-                #if it is then create the text that shows vertical velocity in red
-            else:
-                y_vel_txt = font_small.render("Vertical velocity: "+str(round(player.velocities[1], 1)), True, GREEN)
-                #if its not then create the text that shows horizontal velocity in green
-
-            if player.fuel > 75:
-                #check to see if the fuel is more than 75 percent full
-                fuel_txt = font_small.render("Fuel: "+str(player.fuel)+"%", True, GREEN)
-                #if it is then create the fuel text in green
-            elif player.fuel > 50:
-                #check to see if its more than 50 percent full (but less than 75)
-                fuel_txt = font_small.render("Fuel: "+str(player.fuel)+"%", True, YELLOW)
-                #if it is then create the fuel text in yellow
-            elif player.fuel > 25:
-                #check to see if its more than 25 percent full (but less than 50)
-                fuel_txt = font_small.render("Fuel: "+str(player.fuel)+"%", True, ORANGE)
-                #if it is then create the fuel text in orange
-            elif player.fuel > 0:
-                #check to see if the fuel level is between 0 and 25 percent full
-                fuel_txt = font_small.render("Fuel: "+str(round(math.fabs(player.fuel), 1))+"% [FUEL LOW]", True, RED)
-                #if it is then create the fuel text in red
-            elif player.fuel == 0:
-                #check to see if there's no fuel left
-                fuel_txt = font_small.render("Fuel: 0% [FUEL EMPTY]", True, RED)
-                #if there's not then display that in red
+            x_vel_txt = font_small.render("Horizontal velocity: "+str(round(random.random()*100)), True, random.choice([GREEN, RED]))
+            y_vel_txt = font_small.render("Vertical velocity: "+str(round(random.random()*100)), True, random.choice([GREEN, RED]))
+            fuel_txt = font_small.render("Fuel: "+str(round(random.random()*100))+"%", True, random.choice([GREEN, RED, ORANGE, YELLOW]))
+            drag_txt_x = font_small.render("Horizontal Drag: "+str(round(random.random()*100)), True, WHITE)
+            drag_txt_y = font_small.render("Vertical Drag: "+str(round(random.random()*100)), True, WHITE)
+			#creates the text that says what Vertical drag is
 
             if pygame.sprite.collide_mask(player, planet) != None:
                 #check to see if the player has collide with the planet
@@ -283,7 +254,7 @@ def play(screen, clock, difficulty, muted):
                 player, safe_landing_check, playing = functions.surface_collision(screen, player, difficulty, planet)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
 
-            if pygame.sprite.collide_mask(player, land) != None:
+            if pygame.sprite.collide_mask(player, lava) != None:
                 player.burn_sound.stop()
                 player, safe_landing_check, playing = functions.object_collision(screen, player, 0)
 
