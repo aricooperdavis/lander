@@ -80,47 +80,6 @@ def surface_collision(screen, player, difficulty, planet):
 
     return player, safe_landing_check, playing
 
-def surface_hover(screen, player, difficulty, planet, burn_up=False):
-    font = pygame.font.SysFont('Courier New', 33, True, False)
-    success_text = font.render("Good Hovering, Commander!", True, GREEN)
-    next_level_text = font.render("Press [SPACE] to continue.", True, GREEN)
-    instruct_text = font.render("Press [A] to play again.", True, WHITE)
-    exit_text = font.render("Press [ESC] to exit.", True, WHITE)
-    crash_text = font.render("You burned up in the atmosphere, Commander!", True, RED)
-    player.hovering_time += 1
-    if burn_up == False:
-        if player.hovering_time >= 120:
-            player.hovering_time = 0
-            player.burn_sound.stop()
-            player.landed_sound.play()
-            screen.blit(success_text, (400, 100))
-            screen.blit(instruct_text, (403, 167))
-            screen.blit(exit_text, (447, 217))
-            screen.blit(next_level_text, (403, 367))
-            #And ensure craft stops moving and stays on surface
-            accel_g, player.thrust, player.velocities = 0, 0, [0, 0]
-            #Set safe landing check to True
-            safe_landing_check = True
-            playing = False
-        else:
-            safe_landing_check = True
-            playing = True
-    else:
-        #If landing is crash, display try again messages
-        player.hovering_time = 0
-        player.burn_sound.stop()
-        player.explosion_sound.play()
-        screen.blit(crash_text, (200, 100))
-        screen.blit(instruct_text, (403, 167))
-        screen.blit(exit_text, (447, 217))
-        #And ensure craft stops moving and stays on surface
-        accel_g, player.thrust, player.velocities = 0, 0, [0, 0]
-        #Set safe landing check to False
-        safe_landing_check = False
-        playing = False
-
-    return player, safe_landing_check, playing
-
 def object_collision(screen, player, difficulty):
     font = pygame.font.SysFont('Courier New', 33, True, False)
     success_text = font.render("Good Landing, Commander!", True, GREEN)

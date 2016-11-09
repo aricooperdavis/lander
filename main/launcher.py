@@ -27,13 +27,13 @@ difficulty = 7
 #this is set at this screen so that we have have editable difficulty levels in the future
 #it is essentially the maximum horizontal/vertical speed that the craft can survive landing at
 
-icon = pygame.image.load("../resources/images/player_l.png")
+icon = pygame.image.load("../resources/images/icon.png")
 #loads up the application icon from the resources folder
 pygame.display.set_icon(icon)
 #tells pygame to use the previously loaded application icon as the application icon
 screen = pygame.display.set_mode((1280,720))
 #sets the screen size to that defined by the resolution that is in the hidden settings file
-pygame.display.set_caption("Lander")
+pygame.display.set_caption("Lander - an educational physics game")
 #sets the title of the window to "Lander"
 background_image = pygame.image.load("../resources/images/launcher.png")
 #loads up a splash-screen background image from the relevant resolution resources folder

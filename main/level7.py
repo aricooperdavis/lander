@@ -284,11 +284,44 @@ def play(screen, clock, difficulty, muted):
 
             if pygame.sprite.collide_mask(player, planet) != None:
                 #check to see if the player has collide with the planet
-                player, safe_landing_check, playing = functions.surface_hover(screen, player, difficulty, planet)
+                player.hovering_time += 1
+                if player.hovering_time >= 120:
+                    player.hovering_time = 120
                 #call the safe landing check function described above, and remember whether the landing was safe or not
 
+            xy_font = pygame.font.SysFont('Courier New', 33, True, False)
+            xy_success_text = xy_font.render("Good Hovering, Commander!", True, GREEN)
+            xy_next_level_text = xy_font.render("Press [SPACE] to continue.", True, GREEN)
+            xy_instruct_text = xy_font.render("Press [A] to play again.", True, WHITE)
+            xy_exit_text = xy_font.render("Press [ESC] to exit.", True, WHITE)
+            xy_crash_text = xy_font.render("You burned up in the atmosphere, Commander!", True, RED)
+
             if player.rect.center[1]>740:
-                player, safe_landing_check, playing = functions.surface_hover(screen, player, difficulty, planet, burn_up=True)
+                if player.hovering_time >= 120:
+                    player.hovering_time = 0
+                    player.burn_sound.stop()
+                    player.landed_sound.play()
+                    screen.blit(xy_success_text, (400, 140))
+                    screen.blit(xy_instruct_text, (403, 207))
+                    screen.blit(xy_exit_text, (447, 257))
+                    screen.blit(xy_next_level_text, (403, 407))
+                    #And ensure craft stops moving and stays on surface
+                    accel_g, player.thrust, player.velocities = 0, 0, [0, 0]
+                    #Set safe landing check to True
+                    safe_landing_check = True
+                    playing = False
+                elif player.hovering_time < 120:
+                    player.hovering_time = 0
+                    player.burn_sound.stop()
+                    player.explosion_sound.play()
+                    screen.blit(xy_crash_text, (200, 140))
+                    screen.blit(xy_instruct_text, (403, 207))
+                    screen.blit(xy_exit_text, (447, 257))
+                    #And ensure craft stops moving and stays on surface
+                    accel_g, player.thrust, player.velocities = 0, 0, [0, 0]
+                    #Set safe landing check to False
+                    safe_landing_check = False
+                    playing = False
 
             sprite_list.draw(screen)
             #display the player on the screen
