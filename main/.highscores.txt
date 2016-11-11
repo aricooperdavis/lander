@@ -1,7 +1,7 @@
 (lp0
-(S'Anonymous'
+(S'dave'
 p1
-I1014
+I706
 tp2
 a(S'Example'
 p3

@@ -260,7 +260,7 @@ def write_highscore_to_file(name, score):
         pickle.dump(highscores, f)
 
 def register_highscore(screen, high_score):
-    if sys.version_info[0] != "2":
+    if sys.version_info[0] != 2:
         pass
     else:
         current_string = []
@@ -284,7 +284,7 @@ def register_highscore(screen, high_score):
         write_highscore_to_file(string.join(current_string,""), high_score)
 
 def display_highscores(screen):
-    if sys.version_info[0] != "2":
+    if sys.version_info[0] != 2:
         #python 2.7 is required
         screen.blit(pygame.image.load("../resources/images/highscore_error.png"), (0, 0))
         small_font = pygame.font.SysFont("Courier New", 20, True, False)
