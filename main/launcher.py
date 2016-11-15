@@ -12,7 +12,7 @@ import pygame
 #pygame gives us easy graphics toys
 import level1, level2, level3, level4, level5, level6, level7
 #I've split the levels off into different scripts for ease of adding/changing them
-import video1
+import video1, video2, video3, video4, video5
 
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 #this sets the system audio settings so that our game plays audio at the right speed
@@ -179,25 +179,31 @@ while not done:
                         next_level, level_score = level1.play(screen, clock, difficulty, audio_state)
                         high_score += level_score
                         if next_level == True:
-                            next_level, level_score = level2.play(screen, clock, difficulty, audio_state)
-                            high_score += level_score
+                            next_level = video2.play(screen, clock)
+                            functions.fix_music(music_state)
                             if next_level == True:
-                                next_level, level_score = level3.play(screen, clock, difficulty, audio_state)
+                                next_level, level_score = level2.play(screen, clock, difficulty, audio_state)
                                 high_score += level_score
                                 if next_level == True:
-                                    next_level, level_score = level4.play(screen, clock, difficulty, audio_state)
-                                    high_score += level_score
+                                    next_level = video3.play(screen, clock)
+                                    functions.fix_music(music_state)
                                     if next_level == True:
-                                        next_level, level_score = level5.play(screen, clock, difficulty, audio_state)
+                                        next_level, level_score = level3.play(screen, clock, difficulty, audio_state)
                                         high_score += level_score
                                         if next_level == True:
-                                            next_level, level_score = level6.play(screen, clock, difficulty, audio_state)
+                                            next_level, level_score = level4.play(screen, clock, difficulty, audio_state)
                                             high_score += level_score
                                             if next_level == True:
-                                                next_level, level_score = level7.play(screen, clock, difficulty, audio_state)
+                                                next_level, level_score = level5.play(screen, clock, difficulty, audio_state)
                                                 high_score += level_score
                                                 if next_level == True:
-                                                    functions.register_highscore(screen, high_score)
+                                                    next_level, level_score = level6.play(screen, clock, difficulty, audio_state)
+                                                    high_score += level_score
+                                                    if next_level == True:
+                                                        next_level, level_score = level7.play(screen, clock, difficulty, audio_state)
+                                                        high_score += level_score
+                                                        if next_level == True:
+                                                            functions.register_highscore(screen, high_score)
 
     if audio_state == True:
         #checks to see if the current audio state is on
