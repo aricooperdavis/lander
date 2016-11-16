@@ -2,7 +2,7 @@ import pygame
 
 def play(screen, clock,):
     pygame.mixer.quit()
-    video = pygame.movie.Movie("../resources/videos/video3.mpg")
+    video = pygame.movie.Movie("./resources/videos/video3.mpg")
     video.set_display(screen, [0, 0, 1280, 720])
     video.play()
     playing = True

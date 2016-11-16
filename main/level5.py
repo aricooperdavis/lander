@@ -27,9 +27,9 @@ def play(screen, clock, difficulty, muted):
         def __init__(self):
             super(Craft, self).__init__()
 
-            self.image = pygame.image.load("../resources/images/probe2_ld.png").convert_alpha()
+            self.image = pygame.image.load("./resources/images/probe2_ld.png").convert_alpha()
             #takes an image from the resources folder appropriate to the resolution to be used as the player
-            self.image_mini = pygame.image.load("../resources/images/probe2_mini.png").convert_alpha()
+            self.image_mini = pygame.image.load("./resources/images/probe2_mini.png").convert_alpha()
             #an image used for the little player on the minimap
             self.rect = self.image.get_rect()
             #gets pygame to automatically work out the boundaries of the player
@@ -49,13 +49,13 @@ def play(screen, clock, difficulty, muted):
             #stores a value for the amount of fuel that the player has
             self.fuel_rate = 0.2
             #defines the rate at which fuel is burnt for every frame in which the up arrow is pressed
-            self.burn_sound = pygame.mixer.Sound("../resources/audio/burn.ogg")
+            self.burn_sound = pygame.mixer.Sound("./resources/audio/burn.ogg")
             #loads a burn sound to be played whilst thrusting
-            self.explosion_sound = pygame.mixer.Sound("../resources/audio/explosion.ogg")
+            self.explosion_sound = pygame.mixer.Sound("./resources/audio/explosion.ogg")
             #loads an explosion sound to be played on crashing
-            self.landed_sound = pygame.mixer.Sound("../resources/audio/landed.ogg")
+            self.landed_sound = pygame.mixer.Sound("./resources/audio/landed.ogg")
             #Loads a voice-over sound to be played when landed successfully
-            self.explosion_image = pygame.image.load("../resources/images/explosion.png").convert_alpha()
+            self.explosion_image = pygame.image.load("./resources/images/explosion.png").convert_alpha()
             #Loads the explosion spritesheet
             self.altitude = 0
             #effective altitude of player above planet surface for determining player/background interactions
@@ -93,13 +93,13 @@ def play(screen, clock, difficulty, muted):
 
             if self.thrust == 0:
                 #checks to see if the player is not thrusting
-                self.image = pygame.image.load("../resources/images/probe2_ld.png").convert_alpha()
+                self.image = pygame.image.load("./resources/images/probe2_ld.png").convert_alpha()
                 #ensures that the image describing the player is does not have flames coming out the bottom
             elif self.thrust != 0:
                 #checks to see if the player is thrusting
                 self.fuel -= self.fuel_rate
                 #subtracts the amount of fuel previously set from the amount of fuel left
-                self.image = pygame.image.load("../resources/images/probe2_l.png").convert_alpha()
+                self.image = pygame.image.load("./resources/images/probe2_l.png").convert_alpha()
                 #ensures that the image of the player has flames coming out of the bottom
             self.image = pygame.transform.rotate(self.image, -1*player.angle)
             #rotates the image of the player by its current angle
@@ -111,11 +111,11 @@ def play(screen, clock, difficulty, muted):
 
             self.name = "Titan"
             #the name to be displayed in the top left info section
-            self.image = pygame.image.load("../resources/images/titan_surface.png").convert_alpha()
+            self.image = pygame.image.load("./resources/images/titan_surface.png").convert_alpha()
             #the image used for the planet surface
-            self.bg_image = pygame.image.load("../resources/images/titan_long.png").convert_alpha()
+            self.bg_image = pygame.image.load("./resources/images/titan_long.png").convert_alpha()
             #the image used as a background for the planet (including planet surface)
-            self.map = pygame.image.load("../resources/images/titan_map.png").convert_alpha()
+            self.map = pygame.image.load("./resources/images/titan_map.png").convert_alpha()
             #map image
             self.rect = self.image.get_rect()
             #calcultes the dimensions of the surface so that its location can be determined
@@ -124,7 +124,7 @@ def play(screen, clock, difficulty, muted):
             self.accel_g = 0.14
             #the acceleration due to gravity from the planet
             self.thrust = 0.2
-            #the thrust that the player can exert (don't ask me why I put this in this section...)
+            #the thrust that the player can exert (don't ask me why I put this in this section..)
             self.airDensity = 2.4
 			#Defines the density of the planets atmosphere
 
@@ -133,7 +133,7 @@ def play(screen, clock, difficulty, muted):
         def __init__(self):
             super(Object, self).__init__()
 
-            self.image = pygame.image.load("../resources/images/titan_land.png").convert_alpha()
+            self.image = pygame.image.load("./resources/images/titan_land.png").convert_alpha()
             self.rect = self.image.get_rect()
             self.mask = pygame.mask.from_surface(self.image)
             self.rect.topleft = (0, 0)
@@ -170,11 +170,11 @@ def play(screen, clock, difficulty, muted):
 
     if not muted:
         #check to see if we're muted (i know this looks weird, but it makes sense in other contexts)
-        player.burn_sound = pygame.mixer.Sound("../resources/audio/silence.ogg")
+        player.burn_sound = pygame.mixer.Sound("./resources/audio/silence.ogg")
         #if we are muted then set the burn sound to silence
-        player.explosion_sound = pygame.mixer.Sound("../resources/audio/silence.ogg")
+        player.explosion_sound = pygame.mixer.Sound("./resources/audio/silence.ogg")
         #if we are muted then set the explosion sound to silence
-        player.landed_sound = pygame.mixer.Sound("../resources/audio/silence.ogg")
+        player.landed_sound = pygame.mixer.Sound("./resources/audio/silence.ogg")
         #if we are muted then set the landed sound to silence
 
     while in_level:

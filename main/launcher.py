@@ -27,7 +27,7 @@ difficulty = 7
 #this is set at this screen so that we have have editable difficulty levels in the future
 #it is essentially the maximum horizontal/vertical speed that the craft can survive landing at
 
-icon = pygame.image.load("../resources/images/icon.png")
+icon = pygame.image.load("./resources/images/icon.png")
 #loads up the application icon from the resources folder
 pygame.display.set_icon(icon)
 #tells pygame to use the previously loaded application icon as the application icon
@@ -35,7 +35,7 @@ screen = pygame.display.set_mode((1280,720))
 #sets the screen size to that defined by the resolution that is in the hidden settings file
 pygame.display.set_caption("Lander - an educational physics game")
 #sets the title of the window to "Lander"
-background_image = pygame.image.load("../resources/images/launcher.png")
+background_image = pygame.image.load("./resources/images/launcher.png")
 #loads up a splash-screen background image from the relevant resolution resources folder
 screen.fill(BLACK)
 #clears the screen
@@ -44,7 +44,7 @@ screen.blit(background_image, [0,0])
 
 clock = pygame.time.Clock()
 #gives us a steady time (for playing music and counting frames per second)
-pygame.mixer.music.load("../resources/audio/title_sound.mp3")
+pygame.mixer.music.load("./resources/audio/title_sound.mp3")
 #loads up the background music
 pygame.mixer.music.play(-1)
 #gets the background music playing on loop
@@ -85,7 +85,7 @@ sprite_list = pygame.sprite.Group()
 
 audio_on = Buttons()
 #makes a button called audio_on
-audio_on.image = pygame.image.load("../resources/images/unmuted.png")
+audio_on.image = pygame.image.load("./resources/images/unmuted.png")
 #defines the image used for the button
 audio_on.xy_location = (7, 7)
 #defines where the button will appear
@@ -94,7 +94,7 @@ sprite_list.add(audio_on)
 
 audio_off = Buttons()
 #makes a button called audio_off
-audio_off.image = pygame.image.load("../resources/images/muted.png")
+audio_off.image = pygame.image.load("./resources/images/muted.png")
 #defines the image used for the button
 audio_off.xy_location = (7, 7)
 #defines where the button will appear
@@ -103,7 +103,7 @@ sprite_list.add(audio_off)
 
 music_on = Buttons()
 #makes a button called music_on
-music_on.image = pygame.image.load("../resources/images/musicon.png")
+music_on.image = pygame.image.load("./resources/images/musicon.png")
 #defines the image used
 music_on.xy_location = (7, 47)
 #defines where the button will appear
@@ -111,7 +111,7 @@ sprite_list.add(music_on)
 
 music_off = Buttons()
 #makes a button called music_on
-music_off.image = pygame.image.load("../resources/images/musicoff.png")
+music_off.image = pygame.image.load("./resources/images/musicoff.png")
 #defines the image used
 music_off.xy_location = (7, 47)
 #defines where the button will appear
@@ -206,10 +206,11 @@ while not done:
                                                             next_level, level_score = level7.play(screen, clock, difficulty, audio_state)
                                                             high_score += level_score
                                                             if next_level == True:
-                                                                next_level = video5.play(screen, clock)
-                                                                functions.fix_music(music_state)
-                                                                if next_level == True:
-                                                                    functions.register_highscore(screen, high_score)
+                                                                functions.register_highscore(screen, high_score)
+                                                                #next_level = video5.play(screen, clock)
+                                                                #functions.fix_music(music_state)
+                                                                #if next_level == True:
+                                                                    #functions.register_highscore(screen, high_score)
 
     if audio_state == True:
         #checks to see if the current audio state is on

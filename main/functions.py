@@ -133,12 +133,12 @@ def fix_music(music_state):
     if music_state == True:
         pygame.mixer.quit()
         pygame.mixer.init(44100, -16, 2, 2048)
-        pygame.mixer.music.load("../resources/audio/title_sound.mp3")
+        pygame.mixer.music.load("./resources/audio/title_sound.mp3")
         pygame.mixer.music.play(-1)
     elif music_state == False:
         pygame.mixer.quit
         pygame.mixer.init(44100, -16, 2, 2048)
-        pygame.mixer.music.load("../resources/audio/title_sound.mp3")
+        pygame.mixer.music.load("./resources/audio/title_sound.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.pause()
 
@@ -225,7 +225,7 @@ def get_key():
 def display_box(score, screen, message):
     font = pygame.font.SysFont("Courier New", 40, True, False)
     small_font = pygame.font.SysFont("Courier New", 20, True, False)
-    screen.blit(pygame.image.load("../resources/images/highscore_register.png"), (0, 0))
+    screen.blit(pygame.image.load("./resources/images/highscore_register.png"), (0, 0))
     pygame.draw.rect(screen, WHITE, (380, 180, 530, 300), 2)
     pygame.draw.rect(screen, WHITE, (450, 340, 380, 30), 1)
     title = font.render("New Highscore!", True, WHITE)
@@ -286,7 +286,7 @@ def register_highscore(screen, high_score):
 def display_highscores(screen):
     if sys.version_info[0] != 2:
         #python 2.7 is required
-        screen.blit(pygame.image.load("../resources/images/highscore_error.png"), (0, 0))
+        screen.blit(pygame.image.load("./resources/images/highscore_error.png"), (0, 0))
         small_font = pygame.font.SysFont("Courier New", 20, True, False)
         version_error = small_font.render("Sorry, highscores are currently available in Python 2.7 only.", True, WHITE)
         confirm = small_font.render("Press [ESC] to exit.", True, WHITE)
@@ -303,7 +303,7 @@ def display_highscores(screen):
         while 1:
             number = 0
             highscores = [("Example", 50)]
-            screen.blit(pygame.image.load("../resources/images/highscore_display.png"), (0, 0))
+            screen.blit(pygame.image.load("./resources/images/highscore_display.png"), (0, 0))
             font = pygame.font.SysFont("Courier New", 40, True, False)
             small_font = pygame.font.SysFont("Courier New", 20, True, False)
             pygame.draw.rect(screen, WHITE, (400, 100, 490, 500), 2)
@@ -341,10 +341,10 @@ def display_highscores(screen):
 
 def show_controls(screen):
     while 1:
-        screen.blit(pygame.image.load("../resources/images/highscore_display.png"), (0, 0))
-        screen.blit(pygame.image.load("../resources/images/left.png"), (550, 200))
-        screen.blit(pygame.image.load("../resources/images/right.png"), (650, 200))
-        screen.blit(pygame.image.load("../resources/images/up.png"), (600, 360))
+        screen.blit(pygame.image.load("./resources/images/highscore_display.png"), (0, 0))
+        screen.blit(pygame.image.load("./resources/images/left.png"), (550, 200))
+        screen.blit(pygame.image.load("./resources/images/right.png"), (650, 200))
+        screen.blit(pygame.image.load("./resources/images/up.png"), (600, 360))
         pygame.draw.rect(screen, WHITE, (400, 100, 490, 500), 2)
         font = pygame.font.SysFont("Courier New", 40, True, False)
         small_font = pygame.font.SysFont("Courier New", 20, True, False)
