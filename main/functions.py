@@ -202,14 +202,14 @@ def player_planet_motion(player, planet, screen, objects=False):
 def electro_mag(screen, player, planet):
     player.level_timer += 1
     font_small = pygame.font.SysFont('Courier New', 20, True, False)
-    electro_warning = font_small.render("WARNNIG: ELECTRONIC SYSTEMS DISRUPTED!", True, RED)
+    electro_warning = font_small.render("WARNING: ELECTRONIC SYSTEMS DISRUPTED!", True, RED)
     if (round(player.level_timer, -1)/10.0) % 2 == 0:
         screen.blit(electro_warning, (10, 150))
 
 def wind_warning(screen, player, planet):
     player.level_timer += 1
     font_small = pygame.font.SysFont('Courier New', 20, True, False)
-    electro_warning = font_small.render("WARNNIG: HIGH WINDS DETECTED!", True, RED)
+    electro_warning = font_small.render("WARNING: HIGH WINDS DETECTED!", True, RED)
     if (round(player.level_timer, -1)/10.0) % 2 == 0:
         screen.blit(electro_warning, (10, 150))
     player.velocities = (player.velocities[0]+int(random.random()*1.2), player.velocities[1])
