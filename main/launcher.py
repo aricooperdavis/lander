@@ -185,25 +185,31 @@ while not done:
                                 next_level, level_score = level2.play(screen, clock, difficulty, audio_state)
                                 high_score += level_score
                                 if next_level == True:
-                                    next_level = video3.play(screen, clock)
-                                    functions.fix_music(music_state)
+                                    next_level, level_score = level3.play(screen, clock, difficulty, audio_state)
+                                    high_score += level_score
                                     if next_level == True:
-                                        next_level, level_score = level3.play(screen, clock, difficulty, audio_state)
-                                        high_score += level_score
+                                        next_level = video3.play(screen, clock)
+                                        functions.fix_music(music_state)
                                         if next_level == True:
                                             next_level, level_score = level4.play(screen, clock, difficulty, audio_state)
                                             high_score += level_score
                                             if next_level == True:
-                                                next_level, level_score = level5.play(screen, clock, difficulty, audio_state)
-                                                high_score += level_score
+                                                next_level = video4.play(screen, clock)
+                                                functions.fix_music(music_state)
                                                 if next_level == True:
-                                                    next_level, level_score = level6.play(screen, clock, difficulty, audio_state)
+                                                    next_level, level_score = level5.play(screen, clock, difficulty, audio_state)
                                                     high_score += level_score
                                                     if next_level == True:
-                                                        next_level, level_score = level7.play(screen, clock, difficulty, audio_state)
+                                                        next_level, level_score = level6.play(screen, clock, difficulty, audio_state)
                                                         high_score += level_score
                                                         if next_level == True:
-                                                            functions.register_highscore(screen, high_score)
+                                                            next_level, level_score = level7.play(screen, clock, difficulty, audio_state)
+                                                            high_score += level_score
+                                                            if next_level == True:
+                                                                next_level = video5.play(screen, clock)
+                                                                functions.fix_music(music_state)
+                                                                if next_level == True:
+                                                                    functions.register_highscore(screen, high_score)
 
     if audio_state == True:
         #checks to see if the current audio state is on

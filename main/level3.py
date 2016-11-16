@@ -298,7 +298,7 @@ def play(screen, clock, difficulty, muted):
                 player, safe_landing_check, playing = functions.surface_collision(screen, player, difficulty, planet)
                 #call the safe landing check function described above, and remember whether the landing was safe or not
 
-            if pygame.sprite.collide_mask(player, crash_zone) != None:
+            elif pygame.sprite.collide_mask(player, crash_zone) != None:
                 player.burn_sound.stop()
                 player, safe_landing_check, playing = functions.object_collision(screen, player, 0)
 
