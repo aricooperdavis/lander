@@ -9,6 +9,7 @@ Should you wish to install from the github source (the only option if you want t
 
 ### Modules
 If you are installing from source and **not** using Anaconda, you will need:
+
 1. A number of modules that usually come packaged with Python:
   * `math`
   * `random`
@@ -17,6 +18,7 @@ If you are installing from source and **not** using Anaconda, you will need:
   * `sys`
   * `operator`
   * `subprocess`
+  
 2. One module that is *not* usually packaged with Python:
   * [`pygame`](http://www.pygame.org/hifi.html)
 
