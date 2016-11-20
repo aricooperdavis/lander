@@ -204,14 +204,17 @@ def play():
                                                             next_level, level_score = level6.play(screen, clock, difficulty, audio_state)
                                                             high_score += level_score
                                                             if next_level == True:
-                                                                next_level, level_score = level7.play(screen, clock, difficulty, audio_state)
-                                                                high_score += level_score
-                                                                if next_level == True:
-                                                                    functions.register_highscore(screen, high_score)
-                                                                    #next_level = video5.play(screen, clock)
-                                                                    #functions.fix_music(music_state)
-                                                                    #if next_level == True:
-                                                                        #functions.register_highscore(screen, high_score)
+                                                                next_level = video5.play(screen, clock)
+                                                                functions.fix_music(music_state)
+                                                                if next_level ==  True:
+                                                                    next_level, level_score = level7.play(screen, clock, difficulty, audio_state)
+                                                                    high_score += level_score
+                                                                    if next_level == True:
+                                                                        functions.register_highscore(screen, high_score)
+                                                                        #next_level = video5.play(screen, clock)
+                                                                        #functions.fix_music(music_state)
+                                                                        #if next_level == True:
+                                                                            #functions.register_highscore(screen, high_score)
 
         if audio_state == True:
             #checks to see if the current audio state is on
