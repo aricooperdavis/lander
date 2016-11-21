@@ -1,0 +1,6 @@
+(lp0
+(S'Example'
+p1
+I50
+tp2
+a.
