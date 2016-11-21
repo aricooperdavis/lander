@@ -11,7 +11,7 @@ def play(screen, clock,):
             if event.type == pygame.QUIT:
                 video.stop()
                 playing = False
-            elif event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 video.stop()
                 playing =  False
         screen.blit(screen, (0, 0))

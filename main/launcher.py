@@ -49,6 +49,8 @@ def play():
     #loads up the background music
     pygame.mixer.music.play(-1)
     #gets the background music playing on loop
+    pygame.mixer.music.set_volume(0.5)
+    #sets the volume to half
 
     large_font = pygame.font.SysFont('Courier New', 100, True, False)
     #defines the font for pygame to use for large things, using sizes in the functions file so that it obeys resoultion changes

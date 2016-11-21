@@ -1,12 +1,15 @@
 import pygame
-#we need pygame for fonts
+#although functions.py is not run directly, we still need pygame resources such as fonts
 import math
-#we need pythons math library for absolute value functions for safe landing calculations
+#we need python's math module for absolute value functions e.g. for safe landing calculations
 import random
-#just used for winds
+#python's random module is used to generate random winds
 import string
+#python's string module is used to save/display highscores
 import pickle
+#python's pickle module is used to compress/uncompress highscore data into a text file
 import sys
+#we need to check which version of python is running becuase highscores won't work in python3
 from operator import itemgetter
 
 BLACK  = (  0,   0,   0)
@@ -15,25 +18,45 @@ GREEN  = (  0, 255,   0)
 YELLOW = (255, 255,   0)
 RED    = (255,   0,   0)
 ORANGE = (255, 127,   0)
-#RGB colour definitions for text
+#these are just RGB colour definitions so that we can have coloured text
 
 def safe_landing(player, difficulty):
+    """ the safe landing function takes the player object, finds its velocity, and compares this to the
+    maximum velocity that the craft can safely land at, returning either True for a safe landing, or
+    "angle" if the craft didn't land vertically, or "speed" if it landed too fast"""
+
     if math.fabs(player.velocities[0]) <= difficulty and math.fabs(player.velocities[1]) <= difficulty:
+        #checks to see if the players horizontal/vertical velocity is less than the difficulty
         if player.angle <= 10 and player.angle >= -10:
+            #checks to see if the player is vertical enough
             return True
         else:
+            #if the player is not vertical enough
             return "angle"
     else:
+        #if the players horizontal/vertical velocity is greater than the difficulty
         return "speed"
 
 def explosion(screen, player, planet):
+    """ a function that draws explosions if you crash. Don't think about this function too hard;
+    it pauses game time and runs an explosion in its own little universe, which means that onscreen text
+    temporarily dissapears """
+
     for x in range(0, 5):
+        #x axis multiplication factor for the explosion image; increases by 1 each time
         for y in range(0, 5):
+            #y axis multiplication factor for the explosion image; increases by 1 each time
             screen.blit(player.explosion_image, (player.rect.topleft[0]-45, player.rect.topleft[1]-30), (x*130, y*130, 130, 130))
+            #display the explosion image on the screen
             pygame.display.flip()
+            #display the screen to the user
             screen.blit(planet.bg_image, (0, 0), (0, player.last_altitude, 1280, 720))
+            #clear the screen so that the explosion images don't overlap and look weird.
 
 def surface_collision(screen, player, difficulty, planet):
+    """ a function that is called when the player collides with the surface of the planet, which
+    displays the appropriate landing text and allows the player to continue or repeat the level """
+
     font = pygame.font.SysFont('Courier New', 33, True, False)
     success_text = font.render("Good Landing, Commander!", True, GREEN)
     next_level_text = font.render("Press [SPACE] to try the next level.", True, GREEN)
@@ -135,6 +158,7 @@ def fix_music(music_state):
         pygame.mixer.init(44100, -16, 2, 2048)
         pygame.mixer.music.load("./resources/audio/title_sound.mp3")
         pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.5)
     elif music_state == False:
         pygame.mixer.quit
         pygame.mixer.init(44100, -16, 2, 2048)
