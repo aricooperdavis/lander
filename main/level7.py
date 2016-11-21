@@ -242,7 +242,15 @@ def play(screen, clock, difficulty, muted):
 			#creates the text that says what horizontal drag is
             drag_txt_y = font_small.render("Vertical Drag: "+str(round(player.drag_y)), True, WHITE)
 			#creates the text that says what Vertical drag is
-            data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, WHITE)
+
+            if ((100*player.hovering_time)/119) <= 33:
+                data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, RED)
+            elif ((100*player.hovering_time)/119) <= 66:
+                data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, ORANGE)
+            elif ((100*player.hovering_time)/119) < 100:
+                data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, YELLOW)
+            else:
+                data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, GREEN)
 
             planet_tag = font_small.render("Planet: "+str(planet.name), True, WHITE)
             #create the text that names the planet
