@@ -1,8 +1,7 @@
-#!/usr/bin/python
-#The above is a shebang for executing on Mac/Linux systems (must use chmod +x filname.py and execute using ./filename.py)
-#Not even sure if this runs on Mac/Linux systems easily due to issues with outdated pygame libraries
+#There is no code in this section that is not bundled up in the play() function
 
 def play():
+    """The play function, called by our launcher script in the directory above. Does everything"""
     import functions
     #I've split functions off into a different script for ease of editing/adding new levels/resolutions etc
     import subprocess
@@ -14,6 +13,7 @@ def play():
     import level1, level2, level3, level4, level5, level6, level7
     #I've split the levels off into different scripts for ease of adding/changing them
     import video1, video2, video3, video4, video5, video6
+    #the videos are treated like levels and have their own wrapper scripts
 
     pygame.mixer.pre_init(44100, -16, 2, 2048)
     #this sets the system audio settings so that our game plays audio at the right speed
@@ -75,13 +75,16 @@ def play():
     #renders the text that tells the player how to start playing
 
     class Buttons(pygame.sprite.Sprite):
-        """This code creates a sprites class to allow the showing of mute/resolution/exit buttons"""
+        """This code creates a sprites class to allow the showing of mute/resolution/exit buttons.
+        It could also be used in the future to make buttons clickable"""
         def __init__(self):
+            #__init__ code is run once when the class is initialised
             super(Buttons, self).__init__()
-
+            #allows us to use self so that we don't have to refer to the base class explicitly
             self.image = ""
+            #defines the image for the button
             self.xy_location = ""
-            #creates two empty properties that the buttons use
+            #defines the x-y coordinates for the button
 
     sprite_list = pygame.sprite.Group()
     #initialize a list of sprites that need to be displayed on the screen
@@ -121,14 +124,18 @@ def play():
     sprite_list.add(music_off)
 
     audio_state = True
+    #a variable used to define whether the audio effects are on or off by default
     music_state = True
     #a variable used to define whether the music is on or off by default
 
     done = False
+    #done is used to drop us out of the game loop if the player chooses to exit
     while not done:
+        #testing for done
         high_score = 0
+        #the highscore is reset when the player drops back to the home screen
         level_score = 0
-        #enables quitting of the game using esc
+        #the level score is also reset at the same time
         for event in pygame.event.get():
             #checks for events (e.g. clicking things, pressing keys)
             if event.type == pygame.QUIT:
@@ -166,18 +173,21 @@ def play():
                         pygame.mixer.music.unpause()
                         #unpauses the music
                 elif event.key == pygame.K_h:
+                    #checks to see if the H key was pressed
                     functions.display_highscores(screen)
+                    #calls the display_highscores function to display highscores to the user
                 elif event.key == pygame.K_SPACE:
                     #checks to see if the space key was pressed
                     next_level = video1.play(screen, clock)
-                    #next_level = level1.play(screen, clock, difficulty, audio_state)
+                    #play the first "level" (in this case is a video)
                     functions.fix_music(music_state)
-                    #if it was then call the play function in the level1.py document i.e. the next level (the code here will wait until the level is completed then drop back in)
-                    #note that the play function gets given the screen, clock, difficulty, audio_state, resource location, and resolution
-                    #play will return true when the level has been beaten and the player has chosen to progress, or false if exiting out to the main menu
+                    #fix_music resets the music after videos which requires pygames music module to be disabled so that the videos can control their own audio
                     if next_level == True:
+                        #the play function returns a boolean that is true if the user chose to continue, and is false if the user chose to quit
                         next_level, level_score = functions.show_controls(screen)
+                        #showing the controls is treated like a level so that the user can choose to quit back to the main menu
                         high_score += level_score
+                        #adds the score from the level to the total highscore
                         if next_level == True:
                             next_level, level_score = level1.play(screen, clock, difficulty, audio_state)
                             high_score += level_score
@@ -216,10 +226,7 @@ def play():
                                                                         high_score += level_score
                                                                         if next_level == True:
                                                                             functions.register_highscore(screen, high_score)
-                                                                            #next_level = video5.play(screen, clock)
-                                                                            #functions.fix_music(music_state)
-                                                                            #if next_level == True:
-                                                                                #functions.register_highscore(screen, high_score)
+                                                                            #asks the user to input their highscore - not treated like a level since the user will always return to the main menu
 
         if audio_state == True:
             #checks to see if the current audio state is on
@@ -230,9 +237,13 @@ def play():
             screen.blit(audio_off.image, audio_off.xy_location)
             #prints the audio off button on the screen
         if music_state == True:
+            #checks to see if the current music state is on
             screen.blit(music_on.image, music_on.xy_location)
+            #prints the apporpriate music button on the screen
         elif music_state == False:
+            #checks to see if the current music state is off
             screen.blit(music_off.image, music_off.xy_location)
+            #prints the apporpriate music button on the screen
 
         #print on the screen the text that appears on the title screen
         screen.blit(title_text, [450, 117])
