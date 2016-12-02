@@ -1,4 +1,4 @@
-import functions
+from main import functions
 #I've split functions off into a different script for ease of editing/adding new levels/resolutions etc
 import math
 #math gives us access to absolute magnitude functions
@@ -244,13 +244,13 @@ def play(screen, clock, difficulty, muted):
 			#creates the text that says what Vertical drag is
 
             if ((100*player.hovering_time)/119) <= 33:
-                data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, RED)
+                data_collected = font_small.render("Data collected: "+str(round(((100*player.hovering_time)/119), 1))+"%", True, RED)
             elif ((100*player.hovering_time)/119) <= 66:
-                data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, ORANGE)
+                data_collected = font_small.render("Data collected: "+str(round(((100*player.hovering_time)/119), 1))+"%", True, ORANGE)
             elif ((100*player.hovering_time)/119) < 100:
-                data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, YELLOW)
+                data_collected = font_small.render("Data collected: "+str(round(((100*player.hovering_time)/119), 1))+"%", True, YELLOW)
             else:
-                data_collected = font_small.render("Data collected: "+str((100*player.hovering_time)/119)+"%", True, GREEN)
+                data_collected = font_small.render("Data collected: 100%", True, GREEN)
 
             planet_tag = font_small.render("Planet: "+str(planet.name), True, WHITE)
             #create the text that names the planet
@@ -271,21 +271,21 @@ def play(screen, clock, difficulty, muted):
 
             if player.fuel > 75:
                 #check to see if the fuel is more than 75 percent full
-                fuel_txt = font_small.render("Fuel: "+str(player.fuel)+"%", True, GREEN)
+                fuel_txt = font_small.render("Fuel: "+str(round(player.fuel, 1))+"%", True, GREEN)
                 #if it is then create the fuel text in green
             elif player.fuel > 50:
                 #check to see if its more than 50 percent full (but less than 75)
-                fuel_txt = font_small.render("Fuel: "+str(player.fuel)+"%", True, YELLOW)
+                fuel_txt = font_small.render("Fuel: "+str(round(player.fuel, 1))+"%", True, YELLOW)
                 #if it is then create the fuel text in yellow
             elif player.fuel > 25:
                 #check to see if its more than 25 percent full (but less than 50)
-                fuel_txt = font_small.render("Fuel: "+str(player.fuel)+"%", True, ORANGE)
+                fuel_txt = font_small.render("Fuel: "+str(round(player.fuel, 1))+"%", True, ORANGE)
                 #if it is then create the fuel text in orange
             elif player.fuel > 0:
                 #check to see if the fuel level is between 0 and 25 percent full
                 fuel_txt = font_small.render("Fuel: "+str(round(math.fabs(player.fuel), 1))+"% [FUEL LOW]", True, RED)
                 #if it is then create the fuel text in red
-            elif player.fuel == 0:
+            elif player.fuel <= 0:
                 #check to see if there's no fuel left
                 fuel_txt = font_small.render("Fuel: 0% [FUEL EMPTY]", True, RED)
                 #if there's not then display that in red

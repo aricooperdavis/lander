@@ -2,7 +2,7 @@
 
 def play():
     """The play function, called by our launcher script in the directory above. Does everything"""
-    import functions
+    from main import functions
     #I've split functions off into a different script for ease of editing/adding new levels/resolutions etc
     import subprocess
     #subprocess allows us to open a new window and close the old window when we change the resolution (which enables us to run the game on different computers)
@@ -10,9 +10,9 @@ def play():
     #we use sys for reading/editing a hidden settings file for saving preferences
     import pygame
     #pygame gives us easy graphics toys
-    import level1, level2, level3, level4, level5, level6, level7
+    from main import level1, level2, level3, level4, level5, level6, level7
     #I've split the levels off into different scripts for ease of adding/changing them
-    import video1, video2, video3, video4, video5, video6
+    from main import video1, video2, video3, video4, video5, video6
     #the videos are treated like levels and have their own wrapper scripts
 
     pygame.mixer.pre_init(44100, -16, 2, 2048)

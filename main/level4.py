@@ -1,4 +1,4 @@
-import functions
+from main import functions
 #I've split functions off into a different script for ease of editing/adding new levels/resolutions etc
 import math
 #math gives us access to absolute magnitude functions
@@ -240,11 +240,11 @@ def play(screen, clock, difficulty, muted):
 
             planet_tag = font_small.render("Planet: "+str(planet.name), True, WHITE)
             #create the text that names the planet
-            x_vel_txt = font_small.render("Horizontal velocity: "+str(round(random.random()*100)), True, random.choice([GREEN, RED]))
-            y_vel_txt = font_small.render("Vertical velocity: "+str(round(random.random()*100)), True, random.choice([GREEN, RED]))
-            fuel_txt = font_small.render("Fuel: "+str(round(random.random()*100))+"%", True, random.choice([GREEN, RED, ORANGE, YELLOW]))
-            drag_txt_x = font_small.render("Horizontal Drag: "+str(round(random.random()*100)), True, WHITE)
-            drag_txt_y = font_small.render("Vertical Drag: "+str(round(random.random()*100)), True, WHITE)
+            x_vel_txt = font_small.render("Horizontal velocity: "+str(round(random.random()*100, 1)), True, random.choice([GREEN, RED]))
+            y_vel_txt = font_small.render("Vertical velocity: "+str(round(random.random()*100, 1)), True, random.choice([GREEN, RED]))
+            fuel_txt = font_small.render("Fuel: "+str(round(random.random()*100, 1))+"%", True, random.choice([GREEN, RED, ORANGE, YELLOW]))
+            drag_txt_x = font_small.render("Horizontal Drag: "+str(round(random.random()*100, 1)), True, WHITE)
+            drag_txt_y = font_small.render("Vertical Drag: "+str(round(random.random()*100, 1)), True, WHITE)
 			#creates the text that says what Vertical drag is
 
             if pygame.sprite.collide_mask(player, planet) != None:

@@ -4,13 +4,12 @@ import math
 #we need python's math module for absolute value functions e.g. for safe landing calculations
 import random
 #python's random module is used to generate random winds
-import string
-#python's string module is used to save/display highscores
 import pickle
 #python's pickle module is used to compress/uncompress highscore data into a text file
-import sys
-#we need to check which version of python is running becuase highscores won't work in python3
 from operator import itemgetter
+#this is used for sorting highscores by value
+import io
+#this is used because both open() and io.open() in python3 is the same as io.open() in python2 and we want compatibility
 
 BLACK  = (  0,   0,   0)
 WHITE  = (255, 255, 255)
@@ -254,7 +253,7 @@ def display_box(score, screen, message):
     pygame.draw.rect(screen, WHITE, (450, 340, 380, 30), 1)
     title = font.render("New Highscore!", True, WHITE)
     subtitle = small_font.render("Enter your name below:", True, WHITE)
-    scorecard = small_font.render("Your score: "+str(score), True, WHITE)
+    scorecard = small_font.render("Your score: "+str(round(score, 0)), True, WHITE)
     submit = small_font.render("Press [ENTER] to submit your name", True, WHITE)
     anonymous = small_font.render("or press [ESC] to submit anonymously.", True, WHITE)
     screen.blit(title, (475, 200))
@@ -269,99 +268,80 @@ def display_box(score, screen, message):
 def write_highscore_to_file(name, score):
     highscores = [("Example", 50)]
     try:
-        with open('.highscores.txt', 'r') as f:
+        with io.open('.highscores.txt', 'rb') as f:
             try:
                 highscores = pickle.load(f)
             except EOFError:
-                with open('.highscores.txt.', 'w+') as f:
+                with io.open('.highscores.txt.', 'wb+') as f:
                     pickle.dump(highscores, f)
     except IOError:
-        with open('.highscores.txt', 'w+') as f:
+        with io.open('.highscores.txt', 'wb+') as f:
             pickle.dump(highscores, f)
     highscores.append((str(name), int(score)))
     highscores = sorted(highscores, key=itemgetter(1), reverse=True)[:10]
-    with open('.highscores.txt', 'w') as f:
+    with io.open('.highscores.txt', 'wb') as f:
         pickle.dump(highscores, f)
 
 def register_highscore(screen, high_score):
-    if sys.version_info[0] != 2:
-        pass
-    else:
-        current_string = []
-        display_box(high_score, screen, "Name: "+string.join(current_string,""))
-        while 1:
-            inkey = get_key()
-            if inkey == pygame.K_BACKSPACE:
-                current_string = current_string[0:-1]
-            elif inkey == pygame.K_RETURN:
-                break
-            elif inkey == pygame.K_ESCAPE:
-                current_string = ""
-                break
-            elif len(current_string)>22:
-                pass
-            elif inkey <= 127:
-                current_string.append(chr(inkey))
-            display_box(high_score, screen, "Name: "+string.join(current_string,""))
-        if current_string == "":
-            current_string = "Anonymous"
-        write_highscore_to_file(string.join(current_string,""), high_score)
+    current_string = []
+    display_box(high_score, screen, "Name: "+"".join(current_string))
+    while 1:
+        inkey = get_key()
+        if inkey == pygame.K_BACKSPACE:
+            current_string = current_string[0:-1]
+        elif inkey == pygame.K_RETURN:
+            break
+        elif inkey == pygame.K_ESCAPE:
+            current_string = ""
+            break
+        elif len(current_string)>22:
+            pass
+        elif inkey <= 127:
+            current_string.append(chr(inkey))
+        display_box(high_score, screen, "Name: "+"".join(current_string))
+    if current_string == "":
+        current_string = "Anonymous"
+    write_highscore_to_file("".join(current_string), high_score)
 
 def display_highscores(screen):
-    if sys.version_info[0] != 2:
-        #python 2.7 is required
-        screen.blit(pygame.image.load("./resources/images/highscore_error.png"), (0, 0))
+    while 1:
+        number = 0
+        highscores = [("Example", 50)]
+        screen.blit(pygame.image.load("./resources/images/highscore_display.png"), (0, 0))
+        font = pygame.font.SysFont("Courier New", 40, True, False)
         small_font = pygame.font.SysFont("Courier New", 20, True, False)
-        version_error = small_font.render("Sorry, highscores are currently available in Python 2.7 only.", True, WHITE)
-        confirm = small_font.render("Press [ESC] to exit.", True, WHITE)
-        while 1:
-            screen.blit(version_error, (275, 350))
-            screen.blit(confirm, (500, 380))
-            pygame.display.flip()
-            inkey = get_key()
-            if inkey == pygame.K_ESCAPE:
-                break
-            else:
-                pass
-    else:
-        while 1:
-            number = 0
+        pygame.draw.rect(screen, WHITE, (400, 100, 490, 500), 2)
+        title = font.render("Highscores", True, WHITE)
+        exit = small_font.render("Press [ESC] to exit.", True, WHITE)
+        reset = small_font.render("Press [R] to reset highscores.", True, WHITE)
+        screen.blit(title, (520, 130))
+        screen.blit(exit, (525, 550))
+        screen.blit(reset, (472, 520))
+        try:
+            with io.open('.highscores.txt', 'rb') as f:
+                try:
+                    highscores = pickle.load(f)
+                except EOFError:
+                    with io.open('.highscores.txt.', 'wb+') as f:
+                        pickle.dump(highscores, f)
+        except IOError:
+            with io.open('.highscores.txt', 'wb+') as f:
+                pickle.dump(highscores, f)
+        for i in highscores:
+            text = small_font.render(i[0]+" - "+str(i[1]), True, YELLOW)
+            hp = 645-int((text.get_rect().width)/2)
+            screen.blit(text, (hp, 195+(number*30)))
+            number += 1
+        pygame.display.flip()
+        inkey = get_key()
+        if inkey == pygame.K_ESCAPE:
+            break
+        elif inkey == pygame.K_r:
             highscores = [("Example", 50)]
-            screen.blit(pygame.image.load("./resources/images/highscore_display.png"), (0, 0))
-            font = pygame.font.SysFont("Courier New", 40, True, False)
-            small_font = pygame.font.SysFont("Courier New", 20, True, False)
-            pygame.draw.rect(screen, WHITE, (400, 100, 490, 500), 2)
-            title = font.render("Highscores", True, WHITE)
-            exit = small_font.render("Press [ESC] to exit.", True, WHITE)
-            reset = small_font.render("Press [R] to reset highscores.", True, WHITE)
-            screen.blit(title, (520, 130))
-            screen.blit(exit, (525, 550))
-            screen.blit(reset, (472, 520))
-            try:
-                with open('.highscores.txt', 'r') as f:
-                    try:
-                        highscores = pickle.load(f)
-                    except EOFError:
-                        with open('.highscores.txt.', 'w+') as f:
-                            pickle.dump(highscores, f)
-            except IOError:
-                with open('.highscores.txt', 'w+') as f:
-                    pickle.dump(highscores, f)
-            for i in highscores:
-                text = small_font.render(i[0]+" - "+str(i[1]), True, YELLOW)
-                hp = 645-int((text.get_rect().width)/2)
-                screen.blit(text, (hp, 195+(number*30)))
-                number += 1
-            pygame.display.flip()
-            inkey = get_key()
-            if inkey == pygame.K_ESCAPE:
-                break
-            elif inkey == pygame.K_r:
-                highscores = [("Example", 50)]
-                with open('.highscores.txt', 'w') as f:
-                    pickle.dump(highscores, f)
-            pass
+            with io.open('.highscores.txt', 'wb') as f:
+                pickle.dump(highscores, f)
         pass
+    pass
 
 def show_controls(screen):
     while 1:
