@@ -45,7 +45,7 @@ def play():
 
     clock = pygame.time.Clock()
     #gives us a steady time (for playing music and counting frames per second)
-    pygame.mixer.music.load("./resources/audio/title_sound.ogg")
+    pygame.mixer.music.load("./resources/audio/title_sound.wav")
     #loads up the background music
     pygame.mixer.music.play(-1)
     #gets the background music playing on loop

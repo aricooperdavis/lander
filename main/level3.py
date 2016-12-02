@@ -49,11 +49,11 @@ def play(screen, clock, difficulty, muted):
             #stores a value for the amount of fuel that the player has
             self.fuel_rate = 0.2
             #defines the rate at which fuel is burnt for every frame in which the up arrow is pressed
-            self.burn_sound = pygame.mixer.Sound("./resources/audio/burn.ogg")
+            self.burn_sound = pygame.mixer.Sound("./resources/audio/burn.wav")
             #loads a burn sound to be played whilst thrusting
-            self.explosion_sound = pygame.mixer.Sound("./resources/audio/explosion.ogg")
+            self.explosion_sound = pygame.mixer.Sound("./resources/audio/explosion.wav")
             #loads an explosion sound to be played on crashing
-            self.landed_sound = pygame.mixer.Sound("./resources/audio/landed.ogg")
+            self.landed_sound = pygame.mixer.Sound("./resources/audio/landed.wav")
             #Loads a voice-over sound to be played when landed successfully
             self.explosion_image = pygame.image.load("./resources/images/explosion.png").convert_alpha()
             #Loads the explosion spritesheet
@@ -139,7 +139,7 @@ def play(screen, clock, difficulty, muted):
             self.mask = pygame.mask.from_surface(self.image)
             self.rect.topleft = (-1280, 0)
             self.velocity = (3, 0)
-            self.wind_noise = pygame.mixer.Sound("./resources/audio/wind_noise.ogg")
+            self.wind_noise = pygame.mixer.Sound("./resources/audio/wind_noise.wav")
 
     sprite_list = pygame.sprite.Group()
     object_sprite_list = pygame.sprite.Group()
@@ -182,11 +182,11 @@ def play(screen, clock, difficulty, muted):
 
     if not muted:
         #check to see if we're muted (i know this looks weird, but it makes sense in other contexts)
-        player.burn_sound = pygame.mixer.Sound("./resources/audio/silence.ogg")
+        player.burn_sound = pygame.mixer.Sound("./resources/audio/silence.wav")
         #if we are muted then set the burn sound to silence
-        player.explosion_sound = pygame.mixer.Sound("./resources/audio/silence.ogg")
+        player.explosion_sound = pygame.mixer.Sound("./resources/audio/silence.wav")
         #if we are muted then set the explosion sound to silence
-        player.landed_sound = pygame.mixer.Sound("./resources/audio/silence.ogg")
+        player.landed_sound = pygame.mixer.Sound("./resources/audio/silence.wav")
         #if we are muted then set the landed sound to silence
 
     while in_level:

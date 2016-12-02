@@ -155,13 +155,13 @@ def fix_music(music_state):
     if music_state == True:
         pygame.mixer.quit()
         pygame.mixer.init(44100, -16, 2, 2048)
-        pygame.mixer.music.load("./resources/audio/title_sound.ogg")
+        pygame.mixer.music.load("./resources/audio/title_sound.wav")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.5)
     elif music_state == False:
         pygame.mixer.quit
         pygame.mixer.init(44100, -16, 2, 2048)
-        pygame.mixer.music.load("./resources/audio/title_sound.ogg")
+        pygame.mixer.music.load("./resources/audio/title_sound.wav")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.pause()
 
