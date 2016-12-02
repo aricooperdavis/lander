@@ -29,3 +29,16 @@ We're working on many things:
 * Links to online educational material
 * Disabling cheating (which is currently possible so that we can skip levels during testing, but we'll not tell you how!)
 * Getting the icon working on the game executable
+
+## Screenshots
+![The titlescreen](http://i.imgur.com/81xPhF4.jpg "The titlescreen")
+
+![The controls](http://i.imgur.com/2ijzsWW.jpg "The controls")
+
+![The moon](http://i.imgur.com/AI7M7Gv.png "The moon")
+
+![Io](http://i.imgur.com/hFsNd8u.jpg "Io")
+
+![HD 189733 b](http://i.imgur.com/Na7RsZr.jpg "HD 189733 b")
+
+![The highscores](http://i.imgur.com/eOpysNq.jpg "The highscores")
