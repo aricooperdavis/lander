@@ -36,7 +36,7 @@ def play(screen, clock, difficulty, muted):
             self.mask = pygame.mask.from_surface(self.image)
             #gets pygame to build a mask that goes around the edge of the player for collision detection
             self.velocities = (6, 6)
-            #variable stores the players velocity and is defaulted to an intial velocity value stored in the functions script
+            #variable stores the players speed and is defaulted to an intial speed value stored in the functions script
             self.c_position = (640, 360)
             #stores the players current position and is defaulted to a intial position value stored in the functions script
             self.angle = 0
@@ -64,7 +64,7 @@ def play(screen, clock, difficulty, muted):
             self.level_timer = 0
 
         def update(self, planet):
-            """ this is a function which is updated each frame to calculate where the player should next appear given their position, velocity, thrust, and the current gravity """
+            """ this is a function which is updated each frame to calculate where the player should next appear given their position, speed, thrust, and the current gravity """
             if self.fuel <= 0.0:
                 #checks to see if the fuel is empty (or less than empty since the fuel rate is simply subtracted from the total fuel)
                 self.fuel = 0.0
@@ -90,7 +90,7 @@ def play(screen, clock, difficulty, muted):
 			#vertical deceleration due to drag
 
             self.velocities = (self.velocities[0]+self.x_thrust-drag_decel_x, self.velocities[1]+planet.accel_g-self.y_thrust-drag_decel_y)
-            #changes the players velocity by adding gravity, thrust and drag deceleration
+            #changes the players speed by adding gravity, thrust and drag deceleration
 
             if self.thrust == 0:
                 #checks to see if the player is not thrusting
@@ -256,19 +256,19 @@ def play(screen, clock, difficulty, muted):
             planet_tag = font_small.render("Planet: "+str(planet.name), True, WHITE)
             #create the text that names the planet
             if math.fabs(player.velocities[0]) > difficulty:
-                #check to see if the horizontal velocity is above the difficulty level (of max landing velocity)
-                x_vel_txt = font_small.render("Horizontal velocity: "+str(round(player.velocities[0], 1)), True, RED)
-                #if it is then create the text that shows horizontal velocity in red
+                #check to see if the horizontal speed is above the difficulty level (of max landing speed)
+                x_vel_txt = font_small.render("Horizontal speed: "+str(round(player.velocities[0], 1)), True, RED)
+                #if it is then create the text that shows horizontal speed in red
             else:
-                x_vel_txt = font_small.render("Horizontal velocity: "+str(round(player.velocities[0], 1)), True, GREEN)
-                #if its not then create the text that shows the horizontal velocity in green
+                x_vel_txt = font_small.render("Horizontal speed: "+str(round(player.velocities[0], 1)), True, GREEN)
+                #if its not then create the text that shows the horizontal speed in green
             if math.fabs(player.velocities[1]) > difficulty:
-                #check to see if the vertical velocity is above the difficulty level (of max landing velocity)
-                y_vel_txt = font_small.render("Vertical velocity: "+str(round(player.velocities[1], 1)), True, RED)
-                #if it is then create the text that shows vertical velocity in red
+                #check to see if the vertical speed is above the difficulty level (of max landing speed)
+                y_vel_txt = font_small.render("Vertical speed: "+str(round(player.velocities[1], 1)), True, RED)
+                #if it is then create the text that shows vertical speed in red
             else:
-                y_vel_txt = font_small.render("Vertical velocity: "+str(round(player.velocities[1], 1)), True, GREEN)
-                #if its not then create the text that shows horizontal velocity in green
+                y_vel_txt = font_small.render("Vertical speed: "+str(round(player.velocities[1], 1)), True, GREEN)
+                #if its not then create the text that shows horizontal speed in green
 
             if player.fuel > 75:
                 #check to see if the fuel is more than 75 percent full
@@ -315,9 +315,9 @@ def play(screen, clock, difficulty, muted):
             #prints that text on the screen in an appropriate place for the chosen resolution
 
             screen.blit(x_vel_txt, (10, 10))
-            #display the horizontal velocity text on the screen (in a place appropraite for the resolution)
+            #display the horizontal speed text on the screen (in a place appropraite for the resolution)
             screen.blit(y_vel_txt, (10, 30))
-            #display the vertical velocity text on the screen (in a place appropraite for the resolution)
+            #display the vertical speed text on the screen (in a place appropraite for the resolution)
             screen.blit(fuel_txt, (10, 50))
             #display the fuel level on the screen (in a place appropraite for the resolution)
             screen.blit(planet_tag, (10, 70))
@@ -344,7 +344,7 @@ def play(screen, clock, difficulty, muted):
                     player.c_position = (640, 360)
                     #reset the player position
                     player.velocities = (6, 6)
-                    #reset the player velocity
+                    #reset the player speed
                     player.angle = 0
                     #reset the player tilt
                     player.angular_thrust = 0
@@ -360,7 +360,7 @@ def play(screen, clock, difficulty, muted):
                     player.c_position = (640, 360)
                     #reset the player position
                     player.velocities = (6, 6)
-                    #reset the player velocity
+                    #reset the player speed
                     player.angle = 0
                     #reset the player angle
                     player.angular_thrust = 0
