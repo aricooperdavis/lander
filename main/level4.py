@@ -17,13 +17,6 @@ def play(screen, clock, difficulty, muted):
     ORANGE = (255, 127,   0)
     #the above is just defining RGB colours for text and screen changes
 
-    def safe_landing(player_velocities, difficulty):
-        #is a function that is called to determine whether a landing was safe or not
-        if math.fabs(player_velocities[0]) <= difficulty and math.fabs(player_velocities[1]) <= difficulty:
-            return True
-        else:
-            return False
-
     class Craft(pygame.sprite.Sprite):
         """Craft class for landers, child of Sprite"""
         def __init__(self):
