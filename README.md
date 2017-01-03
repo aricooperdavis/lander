@@ -7,8 +7,6 @@ The game can be downloaded in an easily digestible package **for Windows**. We w
 ## Install from source
 Should you wish to install from the github source (the only option if you want to run this on **Linux** or **Mac OS X**) you will need to install Python and a number of modules. We think that the easiest way to get python and all of the packages that you'll require is by installing Anaconda then running `conda install -c cogsci pygame=1.9.2a0` from a command line. The game can then be run by opening a terminal/command line, navigating to the python-lander folder, and starting the launcher using `python play.py`.
 
-If you are trying to get this running on **Mac OS X** and running into trouble, then [this set of instructions](http://brysonpayne.com/2015/01/10/setting-up-pygame-on-a-mac/) seems to install a reliable pygame and python that don't rely on broken pre-installed SDL libraries, and has worked for us every time.
-
 ### Modules
 If you are installing from source and **not** using Anaconda, you will need:
 
@@ -25,12 +23,12 @@ If you are installing from source and **not** using Anaconda, you will need:
   * [`pygame`](http://www.pygame.org/hifi.html)
 
 ## Things that we're working on
-We're working on many things:
-* Mac compatibility
+We're working on a number of things:
+* Mac compatibility (the *code* is now Mac compatible, but finding a `Pygame` library that includes the, now depreciated, `Movie` module is almost impossible)
 * Online highscores
 * Links to online educational material
 * Disabling cheating (which is currently possible so that we can skip levels during testing, but we'll not tell you how!)
-* Getting the icon working on the game executable
+* Rewriting the game in [`Processing`](https://processing.org/) for compatibility with other systems and so as not to rely on the heavily outdated `Pygame` module
 
 ## Screenshots
 ![The titlescreen](http://i.imgur.com/81xPhF4.jpg "The titlescreen")
