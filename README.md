@@ -27,7 +27,7 @@ We're working on a number of things:
 * Mac compatibility (the *code* is now Mac compatible, but finding a `Pygame` library that includes the, now depreciated, `Movie` module is almost impossible)
 * Online highscores
 * Links to online educational material
-* Disabling cheating (which is currently possible so that we can skip levels during testing, but we'll not tell you how!)
+* Disabling [cheating](https://github.com/aricooperdavis/lander/blob/master/main/level1.py#L188) (it is currently possible to skip levels which is useful for debugging)
 * Rewriting the game in [`Processing`](https://processing.org/) for compatibility with other systems and so as not to rely on the heavily outdated `Pygame` module
 
 ## Screenshots
