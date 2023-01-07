@@ -7,7 +7,6 @@ added_files = [
 ]
 
 a = Analysis(['play.py'],
-             pathex=['C:\\Users\\Ari.DESKTOP-REV5O0M\\Google Drive\\University Stuff\\Year 3 NSC\\Group Project\\python-lander'],
              binaries=None,
              datas=added_files,
              hiddenimports=[],
